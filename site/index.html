@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marco Xavier — Vereador de Limeira</title>
+<meta name="description" content="Mandato do Vereador Marco Xavier em Limeira-SP. Leis aprovadas, ações na comunidade, Comissões de Esporte/Cultura/Turismo e Educação, atendimento ao eleitor."/>
+<meta property="og:title" content="Marco Xavier — Vereador de Limeira"/>
+<meta property="og:description" content="Atendimento direto, escuta da comunidade e luta por quem mais precisa."/>
+<meta property="og:type" content="website"/>
+<meta name="theme-color" content="#1E5BBA"/>
+<link rel="icon" type="image/png" href="logo-azul-tight.png"/>
+<link rel="apple-touch-icon" href="logo-azul-tight.png"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Archivo+Black&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      marco: { azul: '#1E5BBA', azulEsc: '#0E3A8A', amarelo: '#FACC15', amareloEsc: '#EAB308' }
+    },
+    fontFamily: {
+      sans: ['Inter', 'system-ui', 'sans-serif'],
+      display: ['"Archivo Black"', 'Inter', 'system-ui', 'sans-serif']
+    }
+  }}
+}
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+  html { scroll-padding-top: 4.5rem; }
+  .hero-bg { background: linear-gradient(135deg, #1E5BBA 0%, #0E3A8A 100%); }
+  .grain::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px);
+    background-size: 4px 4px; opacity: .4; pointer-events: none;
+  }
+
+  /* Animações ao rolar */
+  .reveal {
+    opacity: 0;
+    transform: translateY(48px);
+    transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1);
+    will-change: opacity, transform;
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal.delay-1 { transition-delay: .08s; }
+  .reveal.delay-2 { transition-delay: .16s; }
+  .reveal.delay-3 { transition-delay: .24s; }
+  .reveal.delay-4 { transition-delay: .32s; }
+  .reveal.delay-5 { transition-delay: .40s; }
+  .reveal.from-left  { transform: translate(-48px, 0); }
+  .reveal.from-right { transform: translate(48px, 0); }
+  .reveal.from-left.in,
+  .reveal.from-right.in { transform: translate(0, 0); }
+  .reveal.scale-up { transform: translateY(40px) scale(.96); }
+  .reveal.scale-up.in { transform: translateY(0) scale(1); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+
+  /* Hero subtle float */
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .floaty { animation: float 6s ease-in-out infinite; }
+
+  /* Parallax-ish bg on hero */
+  @keyframes pulseGlow { 0%,100%{opacity:.3} 50%{opacity:.55} }
+  .glow { animation: pulseGlow 5s ease-in-out infinite; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<!-- NAV -->
+<nav class="bg-white/95 backdrop-blur sticky top-0 z-50 shadow-sm">
+  <div class="max-w-6xl mx-auto px-4 lg:px-6 h-20 flex items-center justify-between">
+    <a href="#topo" class="flex items-center gap-3">
+      <img src="logo-azul-tight.png" alt="Marco Xavier Vereador" class="h-12 lg:h-14"/>
+    </a>
+    <div class="hidden md:flex items-center gap-1 text-sm font-bold">
+      <a href="#sobre"      class="px-3 py-2 text-slate-600 hover:text-marco-azul transition">Sobre</a>
+      <a href="#atuacao"    class="px-3 py-2 text-slate-600 hover:text-marco-azul transition">Atuação</a>
+      <a href="#conquistas" class="px-3 py-2 text-slate-600 hover:text-marco-azul transition">Conquistas</a>
+      <a href="#comunidade" class="px-3 py-2 text-slate-600 hover:text-marco-azul transition">Comunidade</a>
+      <a href="#contato"    class="px-3 py-2 text-slate-600 hover:text-marco-azul transition">Contato</a>
+    </div>
+    <a href="https://wa.me/5519997893941?text=Ol%C3%A1%2C%20vim%20pelo%20site%20do%20vereador%20Marco%20Xavier."
+       target="_blank" rel="noopener"
+       class="bg-marco-amarelo hover:bg-marco-amareloEsc text-marco-azulEsc font-black text-xs lg:text-sm px-3 lg:px-4 py-2.5 rounded-xl transition inline-flex items-center gap-2">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+      <span class="hidden sm:inline">Fale comigo</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header id="topo" class="hero-bg text-white relative overflow-hidden grain">
+  <div class="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-marco-amarelo/20 blur-3xl glow"></div>
+  <div class="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-white/10 blur-3xl"></div>
+
+  <div class="max-w-6xl mx-auto px-4 lg:px-6 py-14 lg:py-20 relative grid lg:grid-cols-2 gap-10 items-center">
+    <div>
+      <div class="reveal inline-flex items-center gap-2 bg-white/10 backdrop-blur rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider mb-6">
+        <span class="w-2 h-2 rounded-full bg-marco-amarelo animate-pulse"></span>
+        46ª Legislatura · 2026–2028
+      </div>
+      <img src="logo-branco-tight.png" alt="" class="reveal delay-1 h-16 lg:h-20 mb-4 -ml-1 opacity-95"/>
+      <h1 class="reveal delay-2 font-display text-4xl lg:text-6xl leading-[1.02] tracking-tight">
+        Mandato de <span class="text-marco-amarelo">portas abertas</span><br/>
+        pra quem mais precisa.
+      </h1>
+      <p class="reveal delay-3 text-white/85 text-lg mt-5 max-w-xl leading-relaxed">
+        Sou vereador de Limeira. Aqui no gabinete a gente escuta, encaminha e cobra resposta — saúde, educação, esporte, cultura e o dia a dia do seu bairro.
+      </p>
+      <div class="reveal delay-4 mt-8 flex flex-wrap gap-3">
+        <a href="#solicitar" class="bg-marco-amarelo hover:bg-marco-amareloEsc text-marco-azulEsc font-black px-6 py-3.5 rounded-xl shadow-lg shadow-amber-900/20 transition transform hover:-translate-y-0.5">
+          Mande sua solicitação
+        </a>
+        <a href="https://wa.me/5519997893941?text=Ol%C3%A1%2C%20vim%20pelo%20site%20do%20vereador%20Marco%20Xavier."
+           target="_blank" rel="noopener"
+           class="bg-white/10 hover:bg-white/20 backdrop-blur text-white font-bold px-6 py-3.5 rounded-xl border border-white/20 inline-flex items-center gap-2 transition">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+          (19) 99789-3941
+        </a>
+      </div>
+      <div class="reveal delay-5 mt-8 flex flex-wrap gap-6 text-sm text-white/80">
+        <div><strong class="text-white block font-black text-2xl">3ª</strong> legislatura</div>
+        <div><strong class="text-white block font-black text-2xl">2</strong> leis aprovadas</div>
+        <div><strong class="text-white block font-black text-2xl">2</strong> comissões permanentes</div>
+      </div>
+    </div>
+
+    <div class="relative hidden lg:block reveal from-right delay-2">
+      <div class="aspect-[4/5] relative overflow-hidden rounded-3xl border-4 border-white/15 shadow-2xl shadow-black/50">
+        <img src="fotos/marco-hero-posse.jpg" alt="Vereador Marco Xavier — posse do 3º mandato"
+             class="absolute inset-0 w-full h-full object-cover"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-marco-azulEsc/60 via-transparent to-transparent"></div>
+        <div class="absolute bottom-4 left-4 right-4 text-white text-xs font-bold uppercase tracking-wider opacity-80">
+          Posse · 3º mandato como vereador
+        </div>
+      </div>
+      <div class="absolute -bottom-4 -left-6 bg-marco-amarelo text-marco-azulEsc rounded-2xl p-5 shadow-2xl shadow-black/40 max-w-[240px] z-10 reveal delay-4">
+        <div class="text-xs font-black uppercase tracking-wider">No gabinete</div>
+        <div class="font-black text-lg leading-tight mt-1">Atendimento direto, sem intermediário.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Indicador de scroll -->
+  <div class="relative flex justify-center pb-6">
+    <a href="#sobre" class="text-white/60 hover:text-white text-xs uppercase tracking-widest flex flex-col items-center gap-2 transition">
+      Role pra baixo
+      <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- BARRA DE COMISSÕES -->
+<section class="bg-marco-amarelo text-marco-azulEsc">
+  <div class="max-w-6xl mx-auto px-4 lg:px-6 py-5 flex flex-col md:flex-row gap-3 md:gap-8 items-start md:items-center justify-between">
+    <div class="reveal from-left font-black text-sm uppercase tracking-widest">Secretário das comissões de</div>
+    <div class="flex flex-wrap gap-3">
+      <span class="reveal from-right bg-marco-azulEsc text-white text-sm font-bold px-4 py-2 rounded-full">⚽ Esporte, Cultura e Turismo</span>
+      <span class="reveal from-right delay-1 bg-marco-azulEsc text-white text-sm font-bold px-4 py-2 rounded-full">🎓 Educação e Ciências</span>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre" class="py-20 lg:py-28">
+  <div class="max-w-6xl mx-auto px-4 lg:px-6 grid lg:grid-cols-5 gap-12 items-start">
+    <div class="lg:col-span-2 reveal from-left">
+      <div class="text-marco-azul font-black text-sm uppercase tracking-widest mb-3">Quem sou</div>
+      <h2 class="text-3xl lg:text-5xl font-black text-slate-900 leading-tight">
+        Limeirense, católico, pai de três e <span class="text-marco-azul">vereador por vocação.</span>
+      </h2>
+    </div>
+    <div class="lg:col-span-3 space-y-4 text-slate-700 leading-relaxed text-lg">
+      <div class="reveal scale-up aspect-[16/10] rounded-xl overflow-hidden bg-slate-100 mb-6">
+        <img src="fotos/marco-plenario.jpg" alt="Marco Xavier no plenário da Câmara" class="w-full h-full object-cover"/>
+      </div>
+      <p class="reveal">
+        Nasci aqui em Limeira em 13 de fevereiro de 1975. Sou casado, pai de três e há anos faço parte da comunidade da Paróquia Santa Luzia, onde aprendi que fé sem trabalho não basta — e que trabalho sem cuidado com o próximo é só ofício.
+      </p>
+      <p class="reveal delay-1">
+        Antes do mandato, atuei como assessor da Secretaria de Saúde da Prefeitura (2014–2016) em programas como Saúde da Família, Saúde sobre Rodas, Mais Médicos e Fim das Filas. É dessa escola que carrego a régua: o serviço público existe pra resolver a vida de quem mais precisa.
+      </p>
+      <p class="reveal delay-2">
+        Hoje estou no terceiro mandato como vereador, pelo PP. Continuo da mesma forma — atendendo no gabinete, andando pelos bairros, ouvindo a comunidade e levando o que escuto pra dentro da Câmara.
+      </p>
+      <div class="grid sm:grid-cols-3 gap-3 pt-4">
+        <div class="reveal delay-1 bg-slate-50 border-2 border-slate-100 rounded-xl p-4">
+          <div class="text-xs font-black text-slate-400 uppercase tracking-wider">Partido</div>
+          <div class="font-black text-marco-azul mt-1">PP</div>
+        </div>
+        <div class="reveal delay-2 bg-slate-50 border-2 border-slate-100 rounded-xl p-4">
+          <div class="text-xs font-black text-slate-400 uppercase tracking-wider">Legislaturas</div>
+          <div class="font-black text-marco-azul mt-1 text-sm">44ª · 45ª · 46ª</div>
+        </div>
+        <div class="reveal delay-3 bg-slate-50 border-2 border-slate-100 rounded-xl p-4">
+          <div class="text-xs font-black text-slate-400 uppercase tracking-wider">Formação</div>
+          <div class="font-black text-marco-azul mt-1 text-sm">Ciências Sociais</div>
+        </div>
+      </div>
+
+      <div class="reveal delay-2 bg-marco-azul/5 border-l-4 border-marco-azul rounded-r-xl p-5 mt-6">
+        <div class="text-xs font-black text-marco-azul uppercase tracking-wider mb-2">Trajetória</div>
+        <ul class="space-y-2 text-slate-700">
+          <li>• Corretor de imóveis (CRECI) e técnico em Transações Imobiliárias</li>
+          <li>• Cursando Ciências Sociais (Faculdade Isca)</li>
+          <li>• Assessor da Secretaria de Saúde da Prefeitura (2014–2016)</li>
+          <li>• Voluntário no Dispensário Madre Tereza, A Turma do Bem e Missão Anjos da Noite</li>
+          <li>• Direção executiva do PSB Limeira (histórico)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ATUAÇÃO -->
+<section id="atuacao" class="bg-white py-20 lg:py-28">
+  <div class="max-w-6xl mx-auto px-4 lg:px-6">
+    <div class="max-w-2xl reveal">
+      <div class="text-marco-azul font-black text-sm uppercase tracking-widest mb-3">Atuação parlamentar</div>
+      <h2 class="text-3xl lg:text-5xl font-black text-slate-900 leading-tight">
+        Onde o mandato age — <span class="text-marco-azul">dentro e fora da Câmara.</span>
+      </h2>
+    </div>
+
+    <div class="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <article class="reveal scale-up bg-slate-50 border-2 border-slate-100 rounded-2xl p-6 hover:border-marco-azul hover:-translate-y-1 transition">
+        <div class="w-12 h-12 rounded-xl bg-marco-azul text-white flex items-center justify-center text-2xl mb-4">🏥</div>
+        <h3 class="font-black text-lg text-slate-900">Saúde</h3>
+        <p class="text-slate-600 text-sm mt-2 leading-relaxed">UBSs, fila de exames, atendimento da rede municipal. Histórico em programas Saúde da Família, Saúde sobre Rodas e Mais Médicos.</p>
+      </article>
+
+      <article class="reveal scale-up delay-1 bg-slate-50 border-2 border-slate-100 rounded-2xl p-6 hover:border-marco-azul hover:-translate-y-1 transition">
+        <div class="w-12 h-12 rounded-xl bg-marco-azul text-white flex items-center justify-center text-2xl mb-4">🎓</div>
+        <h3 class="font-black text-lg text-slate-900">Educação</h3>
+        <p class="text-slate-600 text-sm mt-2 leading-relaxed">Comissão Permanente de Educação e Ciências (secretário). Acompanhamento de APMs, AVCB das escolas e estrutura da rede.</p>
+      </article>
+
+      <article class="reveal scale-up delay-2 bg-slate-50 border-2 border-slate-100 rounded-2xl p-6 hover:border-marco-azul hover:-translate-y-1 transition">
+        <div class="w-12 h-12 rounded-xl bg-marco-azul text-white flex items-center justify-center text-2xl mb-4">⚽</div>
+        <h3 class="font-black text-lg text-slate-900">Esporte, Cultura e Turismo</h3>
+        <p class="text-slate-600 text-sm mt-2 leading-relaxed">Comissão Permanente (secretário) — Ginásio Vô Lucato, uso do Limeira Clube e iniciativas culturais nos bairros.</p>
+      </article>
+
+      <article class="reveal scale-up bg-slate-50 border-2 border-slate-100 rounded-2xl p-6 hover:border-marco-azul hover:-translate-y-1 transition">
+        <div class="w-12 h-12 rounded-xl bg-marco-azul text-white flex items-center justify-center text-2xl mb-4">🛣️</div>
+        <h3 class="font-black text-lg text-slate-900">Infraestrutura do bairro</h3>
+        <p class="text-slate-600 text-sm mt-2 leading-relaxed">Iluminação, asfalto, limpeza pública. O que chega no gabinete vira indicação ou ofício pra Prefeitura.</p>
+      </article>
+
+      <article class="reveal scale-up delay-1 bg-slate-50 border-2 border-slate-100 rounded-2xl p-6 hover:border-marco-azul hover:-translate-y-1 transition">
+        <div class="w-12 h-12 rounded-xl bg-marco-azul text-white flex items-center justify-center text-2xl mb-4">🤝</div>
+        <h3 class="font-black text-lg text-slate-900">Assistência social</h3>
+        <p class="text-slate-600 text-sm mt-2 leading-relaxed">Encaminhamento pra rede de assistência, documentação, vagas em serviços públicos, ações sociais com a comunidade.</p>
+      </article>
+
+      <article class="reveal scale-up delay-2 bg-slate-50 border-2 border-slate-100 rounded-2xl p-6 hover:border-marco-azul hover:-translate-y-1 transition">
+        <div class="w-12 h-12 rounded-xl bg-marco-azul text-white flex items-center justify-center text-2xl mb-4">📜</div>
+        <h3 class="font-black text-lg text-slate-900">Projetos e ofícios</h3>
+        <p class="text-slate-600 text-sm mt-2 leading-relaxed">Projetos de lei, requerimentos e indicações apresentados em plenário a partir das demandas da comunidade.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- CONQUISTAS -->
+<section id="conquistas" class="py-20 lg:py-28">
+  <div class="max-w-6xl mx-auto px-4 lg:px-6">
+    <div class="max-w-2xl reveal">
+      <div class="text-marco-azul font-black text-sm uppercase tracking-widest mb-3">Leis e projetos</div>
+      <h2 class="text-3xl lg:text-5xl font-black text-slate-900 leading-tight">
+        O que já <span class="text-marco-azul">virou lei</span> — e o que tá em curso.
+      </h2>
+    </div>
+
+    <div class="mt-12 grid md:grid-cols-2 gap-5">
+      <article class="reveal from-left bg-white border-2 border-marco-azul rounded-2xl overflow-hidden shadow-lg shadow-blue-900/5">
+        <div class="aspect-[16/9] bg-slate-100 overflow-hidden">
+          <img src="fotos/marco-tribuna.jpg" alt="Marco Xavier na tribuna da Câmara" class="w-full h-full object-cover object-top hover:scale-105 transition duration-700"/>
+        </div>
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-3">
+            <span class="bg-emerald-100 text-emerald-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">✓ Aprovada</span>
+            <span class="text-xs font-bold text-slate-400">2018</span>
+          </div>
+          <div class="text-xs font-black text-marco-azul uppercase tracking-wider mt-4">Lei nº 5.976/2018</div>
+          <h3 class="font-black text-xl text-slate-900 mt-1 leading-tight">Transparência na fila do SUS</h3>
+          <p class="text-slate-600 mt-3 leading-relaxed">
+            Paciente pode consultar sua posição na fila do SUS — exames, consultas e cirurgias — pelo site da Prefeitura, no computador ou no celular.
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-500">
+            <strong class="text-slate-700">Autoria:</strong> Marco Xavier (PP) e Rafael Camargo (MDB)
+          </div>
+        </div>
+      </article>
+
+      <article class="reveal from-right bg-white border-2 border-marco-azul rounded-2xl overflow-hidden shadow-lg shadow-blue-900/5">
+        <div class="aspect-[16/9] bg-slate-100 overflow-hidden">
+          <img src="fotos/ubs-vista-alegre.png" alt="UBS Olívio Rodrigues no Vista Alegre" class="w-full h-full object-cover hover:scale-105 transition duration-700"/>
+        </div>
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-3">
+            <span class="bg-emerald-100 text-emerald-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">✓ Aprovada</span>
+            <span class="text-xs font-bold text-slate-400">2019</span>
+          </div>
+          <div class="text-xs font-black text-marco-azul uppercase tracking-wider mt-4">Lei nº 6.324/2019</div>
+          <h3 class="font-black text-xl text-slate-900 mt-1 leading-tight">60 minutos para atendimento na UBS</h3>
+          <p class="text-slate-600 mt-3 leading-relaxed">
+            Tempo máximo de espera nas unidades da Rede Municipal de Saúde é de 60 minutos, por senha e ordem de chegada. Descumprimento pode ser denunciado à Secretaria de Saúde ou à Ouvidoria.
+          </p>
+          <div class="mt-4 pt-4 border-t border-slate-100 text-xs text-slate-500">
+            <strong class="text-slate-700">Autoria:</strong> Marco Xavier (PP) e Rafael Camargo (MDB)
+          </div>
+        </div>
+      </article>
+
+      <article class="reveal bg-white border-2 border-marco-amarelo rounded-2xl p-6 shadow-lg shadow-amber-900/5 md:col-span-2">
+        <div class="flex items-start justify-between gap-3">
+          <span class="bg-amber-100 text-amber-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">⏳ Em tramitação</span>
+          <span class="text-xs font-bold text-slate-400">Projeto de Lei</span>
+        </div>
+        <div class="text-xs font-black text-marco-azul uppercase tracking-wider mt-4">Gestão compartilhada de praças</div>
+        <h3 class="font-black text-xl text-slate-900 mt-1 leading-tight">Isenção da taxa de ocupação de solo pra trailers</h3>
+        <p class="text-slate-600 mt-3 leading-relaxed">
+          Projeto de lei que propõe a gestão compartilhada de praças com proprietários de trailers, com isenção da taxa de ocupação de solo. Objetivo: melhorar os cuidados com os espaços públicos por meio da gestão compartilhada com o comerciante local.
+        </p>
+      </article>
+    </div>
+
+    <div class="reveal mt-10 bg-marco-azul/5 border-l-4 border-marco-azul rounded-r-2xl p-6">
+      <div class="text-xs font-black text-marco-azul uppercase tracking-wider mb-2">Comissão de Assuntos Relevantes do SUS</div>
+      <p class="text-slate-700 leading-relaxed">
+        Espaço de discussão de ações para acompanhar as listas de espera dos serviços públicos de saúde — continuação direta da agenda de transparência que originou a Lei 5.976/2018.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- COMUNIDADE -->
+<section id="comunidade" class="bg-white py-20 lg:py-28">
+  <div class="max-w-6xl mx-auto px-4 lg:px-6">
+    <div class="max-w-2xl reveal">
+      <div class="text-marco-azul font-black text-sm uppercase tracking-widest mb-3">Ações na comunidade</div>
+      <h2 class="text-3xl lg:text-5xl font-black text-slate-900 leading-tight">
+        Lado a lado com <span class="text-marco-azul">quem vive o bairro.</span>
+      </h2>
+    </div>
+
+    <div class="mt-12 grid md:grid-cols-2 gap-5">
+
+      <!-- Festa das Crianças -->
+      <article class="reveal from-left bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition md:col-span-2">
+        <div class="grid md:grid-cols-2 gap-0">
+          <div class="aspect-[4/3] md:aspect-auto bg-slate-100 overflow-hidden">
+            <img src="fotos/festa-criancas.jpg" alt="Marco entregando brinquedo na Festa das Crianças" class="w-full h-full object-cover hover:scale-105 transition duration-700"/>
+          </div>
+          <div class="p-6 lg:p-8">
+            <div class="inline-flex items-center gap-2 bg-pink-50 text-pink-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+              <span>🎈</span> Ação social
+            </div>
+            <h3 class="font-black text-xl text-slate-900 leading-tight">Festa das Crianças — Jd Novo Horizonte</h3>
+            <p class="text-slate-600 mt-3 leading-relaxed">
+              Ação social na semana das crianças junto à Comunidade São João Evangelista, em parceria com a <strong>Turma do Bem</strong> e o <strong>Gaiola Clube de Limeira</strong>. Brinquedo, doce e atendimento pra criançada do bairro.
+            </p>
+            <p class="text-slate-500 mt-3 text-sm leading-relaxed">
+              Voluntariado de longa data: Marco faz parte do grupo <strong>Xavier e amigos</strong>, mobilizado em ações da Turma do Bem ao longo do ano.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Viaduto Paulo Natal -->
+      <article class="reveal from-right bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition md:col-span-2">
+        <div class="grid md:grid-cols-2 gap-0">
+          <div class="p-6 lg:p-8 order-2 md:order-1">
+            <div class="inline-flex items-center gap-2 bg-marco-azul/10 text-marco-azul text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+              <span>🚧</span> Fiscalização
+            </div>
+            <h3 class="font-black text-xl text-slate-900 leading-tight">Viaduto Paulo Natal — moradores ouvidos</h3>
+            <p class="text-slate-600 mt-3 leading-relaxed">
+              Solicitei reunião com o prefeito Mario Botion e o secretário de Obras Dagoberto Guidi pra detalhamento das obras do complexo do viaduto Paulo Natal aos moradores. <strong>Cerca de 100 pessoas</strong> participaram do encontro na Comunidade São João Evangelista.
+            </p>
+          </div>
+          <div class="aspect-[4/3] md:aspect-auto bg-slate-100 overflow-hidden order-1 md:order-2">
+            <img src="fotos/viaduto-aerea.png" alt="Vista aérea do viaduto Paulo Natal" class="w-full h-full object-cover hover:scale-105 transition duration-700"/>
+          </div>
+        </div>
+      </article>
+
+      <!-- TG 94 -->
+      <article class="reveal from-left bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition">
+        <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
+          <img src="fotos/tg94-doacao.png" alt="TG 94 entrega de fraldas geriátricas" class="w-full h-full object-cover hover:scale-105 transition duration-700"/>
+        </div>
+        <div class="p-6">
+          <div class="inline-flex items-center gap-2 bg-orange-50 text-orange-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+            <span>🎯</span> TG 94 · Recanto dos Idosos
+          </div>
+          <h3 class="font-black text-lg text-slate-900 leading-tight">2 mil fraldas geriátricas doadas</h3>
+          <p class="text-slate-600 mt-2 leading-relaxed">
+            Como integrante do grupo de ex-atiradores do <strong>Tiro de Guerra 94</strong>, participei da doação de 2 mil fraldas geriátricas ao Recanto dos Idosos Nossa Senhora do Rosário.
+          </p>
+        </div>
+      </article>
+
+      <!-- Agentes de Saúde -->
+      <article class="reveal from-right bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition">
+        <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
+          <img src="fotos/agentes-saude-grupo.png" alt="Reunião com agentes comunitários de saúde" class="w-full h-full object-cover hover:scale-105 transition duration-700"/>
+        </div>
+        <div class="p-6">
+          <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+            <span>💚</span> Saúde pública
+          </div>
+          <h3 class="font-black text-lg text-slate-900 leading-tight">Agentes comunitários de saúde</h3>
+          <p class="text-slate-600 mt-2 leading-relaxed">
+            Atuação junto à categoria pela valorização dos agentes de saúde e combate às endemias — pagamento do piso salarial nacional e incentivo financeiro.
+          </p>
+        </div>
+      </article>
+
+      <!-- Igreja Católica -->
+      <article class="reveal from-left bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition md:col-span-2">
+        <div class="grid md:grid-cols-2 gap-0">
+          <div class="aspect-[4/3] md:aspect-auto bg-slate-100 overflow-hidden">
+            <img src="fotos/padre-mauricio.png" alt="Marco com o padre da Paróquia Santa Luzia" class="w-full h-full object-cover hover:scale-105 transition duration-700"/>
+          </div>
+          <div class="p-6 lg:p-8">
+            <div class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+              <span>⛪</span> Igreja católica
+            </div>
+            <h3 class="font-black text-xl text-slate-900 leading-tight">Presença na Igreja católica</h3>
+            <p class="text-slate-600 mt-3 leading-relaxed">
+              Anos de caminhada na Paróquia Santa Luzia, na Comunidade São João Evangelista, na Missão Intimidade e na Pascom Família. Fé, comunidade e serviço — a base de tudo.
+            </p>
+            <p class="text-slate-500 mt-3 text-sm leading-relaxed">
+              Da Crisma na paróquia ao trabalho de pastoral hoje — caminho de fé compartilhado com Padre Maurício e tantos outros irmãos da comunidade.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Associação dos Corretores -->
+      <article class="reveal from-right bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition md:col-span-2">
+        <div class="grid md:grid-cols-2 gap-0">
+          <div class="p-6 lg:p-8 order-2 md:order-1">
+            <div class="inline-flex items-center gap-2 bg-sky-50 text-sky-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+              <span>🏘️</span> Categoria profissional
+            </div>
+            <h3 class="font-black text-xl text-slate-900 leading-tight">Associação dos Corretores de Imóveis</h3>
+            <p class="text-slate-600 mt-3 leading-relaxed">
+              Marco é corretor de imóveis (CRECI) — origem profissional que ele leva pro mandato. Presença e diálogo permanente com a categoria, defendendo o mercado imobiliário local e os profissionais que vivem dele.
+            </p>
+          </div>
+          <div class="aspect-[16/10] md:aspect-auto bg-slate-100 overflow-hidden order-1 md:order-2">
+            <img src="fotos/corretores-imoveis.jpg" alt="Marco com a Associação dos Corretores de Imóveis" class="w-full h-full object-cover hover:scale-105 transition duration-700"/>
+          </div>
+        </div>
+      </article>
+
+      <!-- Saíra / Campo Alegre -->
+      <article class="reveal from-left bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition md:col-span-2">
+        <div class="grid md:grid-cols-2 gap-0">
+          <div class="aspect-[4/3] md:aspect-auto bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center text-amber-700 relative overflow-hidden">
+            <img src="fotos/saira.jpg" alt="Bairro Saíra — Campo Alegre" class="w-full h-full object-cover hover:scale-105 transition duration-700" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
+            <div class="absolute inset-0 hidden flex-col items-center justify-center gap-2 text-center px-6">
+              <div class="text-5xl">⚡</div>
+              <div class="font-mono text-xs opacity-60">fotos/saira.jpg</div>
+              <div class="text-xs opacity-60">enviar a foto do Saíra</div>
+            </div>
+          </div>
+          <div class="p-6 lg:p-8">
+            <div class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+              <span>⚡</span> Saíra · Campo Alegre
+            </div>
+            <h3 class="font-black text-xl text-slate-900 leading-tight">Luta pelo bairro Saíra</h3>
+            <p class="text-slate-600 mt-3 leading-relaxed">
+              Ação junto à Associação dos Moradores do Campo Alegre pra implantação de melhorias na rede de energia elétrica. Participação em reuniões com a <strong>Elektro</strong> pra encaminhar o que o bairro precisa.
+            </p>
+            <p class="text-slate-500 mt-3 text-sm leading-relaxed">
+              Saíra é casa do mandato — bairro que escolheu o Marco e que o Marco escolheu pra ouvir todo mês.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Rua João Gazeta -->
+      <article class="reveal bg-slate-50 border border-slate-200 rounded-2xl p-6 hover:shadow-xl transition md:col-span-2">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center text-2xl flex-shrink-0">🛣️</div>
+          <div class="flex-1">
+            <h3 class="font-black text-lg text-slate-900">Rua João Gazeta — mão dupla restabelecida</h3>
+            <p class="text-slate-600 mt-2 leading-relaxed text-sm">
+              Atuação junto aos comerciantes pra reverter a sinalização viária após mudanças das obras locais.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Emenda Helinho -->
+      <article class="reveal bg-slate-50 border border-slate-200 rounded-2xl p-6 hover:shadow-xl transition md:col-span-2">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-xl bg-marco-amarelo/30 text-marco-azulEsc flex items-center justify-center text-2xl flex-shrink-0">👂</div>
+          <div class="flex-1">
+            <h3 class="font-black text-lg text-slate-900">Emenda parlamentar: aparelhos auditivos</h3>
+            <p class="text-slate-600 mt-2 leading-relaxed text-sm">
+              Solicitação ao deputado estadual Helinho Zanatta de emenda parlamentar destinada à compra de aparelhos auditivos fornecidos pelo poder público.
+            </p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Base territorial -->
+    <div class="mt-20">
+      <h3 class="reveal font-black text-2xl lg:text-3xl text-slate-900 mb-6">Comunidades de onde o mandato vem</h3>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div class="reveal scale-up bg-marco-azul text-white rounded-xl p-4 text-center">
+          <div class="text-3xl mb-1">⛪</div>
+          <div class="font-black text-sm leading-tight">Paróquia Santa Luzia</div>
+        </div>
+        <div class="reveal scale-up delay-1 bg-white border-2 border-slate-200 rounded-xl p-4 text-center">
+          <div class="text-3xl mb-1">🎯</div>
+          <div class="font-black text-sm leading-tight text-slate-900">Tiro de Guerra 94</div>
+        </div>
+        <div class="reveal scale-up delay-2 bg-white border-2 border-slate-200 rounded-xl p-4 text-center">
+          <div class="text-3xl mb-1">🏘️</div>
+          <div class="font-black text-sm leading-tight text-slate-900">Vista Alegre</div>
+        </div>
+        <div class="reveal scale-up delay-3 bg-white border-2 border-slate-200 rounded-xl p-4 text-center">
+          <div class="text-3xl mb-1">🏘️</div>
+          <div class="font-black text-sm leading-tight text-slate-900">Novo Horizonte</div>
+        </div>
+        <div class="reveal scale-up delay-4 bg-white border-2 border-slate-200 rounded-xl p-4 text-center">
+          <div class="text-3xl mb-1">🏘️</div>
+          <div class="font-black text-sm leading-tight text-slate-900">Nova Suíça</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLICITAR (CTA grande) -->
+<section id="solicitar" class="py-20 lg:py-28">
+  <div class="max-w-4xl mx-auto px-4 lg:px-6 text-center">
+    <div class="reveal text-marco-azul font-black text-sm uppercase tracking-widest mb-3">Sua solicitação</div>
+    <h2 class="reveal delay-1 text-3xl lg:text-5xl font-black text-slate-900 leading-tight">
+      Buraco na rua? Vaga no posto? <br class="hidden md:block"/>
+      <span class="text-marco-azul">Manda pra cá.</span>
+    </h2>
+    <p class="reveal delay-2 text-slate-600 text-lg mt-5 max-w-2xl mx-auto leading-relaxed">
+      O formulário é direto. Sua mensagem cai no painel do gabinete e a equipe responde pelo WhatsApp.
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-4 mt-12 text-left">
+      <a href="publico/" class="reveal from-left group bg-marco-azul hover:bg-marco-azulEsc text-white rounded-2xl p-6 transition shadow-lg shadow-blue-900/10 hover:-translate-y-1">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-xl bg-marco-amarelo text-marco-azulEsc flex items-center justify-center text-2xl flex-shrink-0">📝</div>
+          <div>
+            <div class="font-black text-lg">Formulário do gabinete</div>
+            <div class="text-sm text-white/80 mt-1">Cadastra a demanda, gera protocolo e entra na fila de atendimento.</div>
+            <div class="mt-3 text-marco-amarelo text-sm font-black inline-flex items-center gap-1 group-hover:gap-2 transition-all">Abrir formulário →</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://wa.me/5519997893941?text=Ol%C3%A1%2C%20vim%20pelo%20site%20do%20vereador%20Marco%20Xavier."
+         target="_blank" rel="noopener"
+         class="reveal from-right group bg-white border-2 border-slate-200 hover:border-marco-azul text-slate-800 rounded-2xl p-6 transition hover:-translate-y-1">
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+          </div>
+          <div>
+            <div class="font-black text-lg text-slate-900">WhatsApp da equipe</div>
+            <div class="text-sm text-slate-600 mt-1">Mensagem rápida pra quem prefere falar por áudio ou texto.</div>
+            <div class="mt-3 text-emerald-600 text-sm font-black inline-flex items-center gap-1 group-hover:gap-2 transition-all">(19) 99789-3941 →</div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section id="contato" class="hero-bg text-white py-20 lg:py-24 relative overflow-hidden grain">
+  <div class="absolute -top-32 left-1/3 w-96 h-96 rounded-full bg-marco-amarelo/15 blur-3xl glow"></div>
+  <div class="max-w-6xl mx-auto px-4 lg:px-6 grid lg:grid-cols-2 gap-10 relative">
+    <div class="reveal from-left">
+      <div class="text-marco-amarelo font-black text-sm uppercase tracking-widest mb-3">Contato</div>
+      <h2 class="text-3xl lg:text-5xl font-black leading-tight">
+        Gabinete do Vereador <br/>
+        <span class="text-marco-amarelo">Marco Xavier</span>
+      </h2>
+      <p class="text-white/80 mt-4 max-w-md">Câmara Municipal de Limeira-SP. Atendimento pelos canais abaixo.</p>
+      <div class="mt-6 text-sm text-white/70">
+        <strong class="text-white block">Equipe do gabinete</strong>
+        Marco + 2 assessores focados em atendimento ao público
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      <a href="mailto:marcoxavier@limeira.sp.leg.br" class="reveal from-right flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur rounded-xl p-4 border border-white/10 transition hover:-translate-y-0.5">
+        <div class="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center text-xl">📧</div>
+        <div class="min-w-0">
+          <div class="text-xs font-bold text-marco-amarelo uppercase tracking-wider">Email institucional</div>
+          <div class="font-bold truncate">marcoxavier@limeira.sp.leg.br</div>
+        </div>
+      </a>
+      <a href="tel:+551934047503" class="reveal from-right delay-1 flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur rounded-xl p-4 border border-white/10 transition hover:-translate-y-0.5">
+        <div class="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center text-xl">☎️</div>
+        <div>
+          <div class="text-xs font-bold text-marco-amarelo uppercase tracking-wider">Gabinete</div>
+          <div class="font-bold">(19) 3404-7503</div>
+        </div>
+      </a>
+      <a href="https://wa.me/5519997893941" target="_blank" rel="noopener" class="reveal from-right delay-2 flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur rounded-xl p-4 border border-white/10 transition hover:-translate-y-0.5">
+        <div class="w-12 h-12 rounded-lg bg-emerald-500 flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+        </div>
+        <div>
+          <div class="text-xs font-bold text-marco-amarelo uppercase tracking-wider">WhatsApp da equipe</div>
+          <div class="font-bold">(19) 99789-3941</div>
+        </div>
+      </a>
+      <a href="https://instagram.com/marcoxavier.mx" target="_blank" rel="noopener" class="reveal from-right delay-3 flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur rounded-xl p-4 border border-white/10 transition hover:-translate-y-0.5">
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-500 to-amber-500 flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </div>
+        <div>
+          <div class="text-xs font-bold text-marco-amarelo uppercase tracking-wider">Instagram</div>
+          <div class="font-bold">@marcoxavier.mx</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- BANNER FLUTUANTE — CTA SOLICITAÇÃO -->
+<div id="bannerSolicitar"
+     class="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:bottom-6 md:max-w-md z-50 hidden">
+  <div class="bg-white border-2 border-marco-azul rounded-2xl shadow-2xl shadow-blue-900/20 p-4 md:p-5 flex items-start gap-3">
+    <div class="w-11 h-11 rounded-xl bg-marco-azul text-marco-amarelo flex items-center justify-center text-xl flex-shrink-0">📝</div>
+    <div class="flex-1 min-w-0">
+      <div class="font-black text-slate-900 text-sm md:text-base leading-tight">Tem um pedido pro gabinete?</div>
+      <div class="text-xs md:text-sm text-slate-600 mt-1 leading-snug">Buraco, vaga no posto, denúncia ou ideia — manda pela gente.</div>
+      <div class="mt-3 flex items-center gap-2 flex-wrap">
+        <a href="#solicitar"
+           onclick="fecharBannerSolicitar()"
+           class="bg-marco-azul hover:bg-marco-azulEsc text-white text-xs md:text-sm font-black px-3 py-2 rounded-lg transition">
+          Fazer solicitação
+        </a>
+        <button onclick="fecharBannerSolicitar()"
+                class="text-slate-500 hover:text-slate-700 text-xs font-bold px-2 py-2">Agora não</button>
+      </div>
+    </div>
+    <button onclick="fecharBannerSolicitar()"
+            aria-label="Fechar"
+            class="text-slate-400 hover:text-slate-700 -mt-1 -mr-1 p-1 flex-shrink-0">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-marco-azulEsc text-white/70 py-8">
+  <div class="max-w-6xl mx-auto px-4 lg:px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
+    <div class="flex items-center gap-3">
+      <img src="logo-branco-tight.png" alt="" class="h-8 opacity-60"/>
+      <div>© <span id="ano"></span> Gabinete do Vereador Marco Xavier · Limeira-SP</div>
+    </div>
+    <div class="text-xs">Mandato 46ª Legislatura · 2026–2028</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('ano').textContent = new Date().getFullYear();
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Banner solicitação — aparece após 3s, fechado lembra por 24h
+  const BANNER_KEY = 'mx_banner_solicitar_dismissed';
+  const BANNER_TTL = 24 * 60 * 60 * 1000;
+  function fecharBannerSolicitar() {
+    const el = document.getElementById('bannerSolicitar');
+    if (!el) return;
+    el.style.transition = 'opacity .35s, transform .35s';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    setTimeout(() => el.classList.add('hidden'), 350);
+    try { localStorage.setItem(BANNER_KEY, String(Date.now())); } catch {}
+  }
+  (function abrirBannerSolicitar() {
+    let dismissedAt = 0;
+    try { dismissedAt = parseInt(localStorage.getItem(BANNER_KEY) || '0', 10); } catch {}
+    if (dismissedAt && (Date.now() - dismissedAt) < BANNER_TTL) return;
+    setTimeout(() => {
+      const el = document.getElementById('bannerSolicitar');
+      if (!el) return;
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        el.style.transition = 'opacity .5s cubic-bezier(.2,.7,.2,1), transform .5s cubic-bezier(.2,.7,.2,1)';
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      });
+    }, 3000);
+  })();
+</script>
+</body>
+</html>
