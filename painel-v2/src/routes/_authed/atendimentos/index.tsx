@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import { LayoutGrid, List, Plus } from 'lucide-react'
 import { useDemandas, useMoverDemanda } from '@/features/demandas/hooks'
 import { useEleitores } from '@/features/eleitores/hooks'
+import { DemandaModal } from '@/features/demandas/components/DemandaModal'
 import { cn } from '@/lib/utils'
 import type { Demanda } from '@/lib/database.types'
 
@@ -36,6 +37,11 @@ function AtendimentosPage() {
   const [filtroStatus, setFiltroStatus] = useState('')
   const [dataDe, setDataDe] = useState(primeiroDoMes())
   const [dataAte, setDataAte] = useState(hoje())
+  const [modalOpen, setModalOpen] = useState(false)
+  const [demandaEditando, setDemandaEditando] = useState<Demanda | null>(null)
+
+  function nova() { setDemandaEditando(null); setModalOpen(true) }
+  function editar(d: Demanda) { setDemandaEditando(d); setModalOpen(true) }
 
   const mapEleitores = useMemo(() => {
     if (!eleitores) return new Map<string, string>()
@@ -86,11 +92,13 @@ function AtendimentosPage() {
               <LayoutGrid className="w-4 h-4" /> Kanban
             </button>
           </div>
-          <button className="bg-marco-azul text-white font-bold px-5 py-2.5 rounded-lg hover:bg-marco-azul-esc text-sm flex items-center gap-2">
+          <button onClick={nova} className="bg-marco-azul text-white font-bold px-5 py-2.5 rounded-lg hover:bg-marco-azul-esc text-sm flex items-center gap-2">
             <Plus className="w-4 h-4" /> Novo
           </button>
         </div>
       </div>
+
+      <DemandaModal open={modalOpen} onClose={() => setModalOpen(false)} demanda={demandaEditando} />
 
       <div className="bg-white rounded-2xl ring-soft p-4 mb-4 grid grid-cols-1 sm:grid-cols-4 gap-3">
         <input
@@ -126,15 +134,15 @@ function AtendimentosPage() {
       {isLoading ? (
         <div className="text-center py-12 text-slate-400">Carregando...</div>
       ) : modo === 'lista' ? (
-        <ListaView demandas={filtradas} mapEleitores={mapEleitores} />
+        <ListaView demandas={filtradas} mapEleitores={mapEleitores} onEdit={editar} />
       ) : (
-        <KanbanView demandas={filtradas} mapEleitores={mapEleitores} />
+        <KanbanView demandas={filtradas} mapEleitores={mapEleitores} onEdit={editar} />
       )}
     </div>
   )
 }
 
-function ListaView({ demandas, mapEleitores }: { demandas: Demanda[]; mapEleitores: Map<string, string> }) {
+function ListaView({ demandas, mapEleitores, onEdit }: { demandas: Demanda[]; mapEleitores: Map<string, string>; onEdit: (d: Demanda) => void }) {
   const [limite, setLimite] = useState(50)
 
   return (
@@ -151,7 +159,7 @@ function ListaView({ demandas, mapEleitores }: { demandas: Demanda[]; mapEleitor
         <>
           <div className="divide-y divide-slate-100">
             {demandas.slice(0, limite).map(d => (
-              <div key={d.id} className="p-4 hover:bg-slate-50 cursor-pointer">
+              <div key={d.id} onClick={() => onEdit(d)} className="p-4 hover:bg-slate-50 cursor-pointer">
                 <div className="flex items-center gap-2 flex-wrap mb-1">
                   <span className="text-[10px] font-bold text-marco-azul uppercase bg-marco-azul/10 px-2 py-0.5 rounded">
                     {d.tipo}
@@ -187,7 +195,7 @@ function ListaView({ demandas, mapEleitores }: { demandas: Demanda[]; mapEleitor
   )
 }
 
-function KanbanView({ demandas, mapEleitores }: { demandas: Demanda[]; mapEleitores: Map<string, string> }) {
+function KanbanView({ demandas, mapEleitores, onEdit }: { demandas: Demanda[]; mapEleitores: Map<string, string>; onEdit: (d: Demanda) => void }) {
   const mover = useMoverDemanda()
   const [draggingId, setDraggingId] = useState<string | null>(null)
 
@@ -233,6 +241,7 @@ function KanbanView({ demandas, mapEleitores }: { demandas: Demanda[]; mapEleito
                     draggable
                     onDragStart={() => setDraggingId(d.id)}
                     onDragEnd={() => setDraggingId(null)}
+                    onClick={() => onEdit(d)}
                     className={cn(
                       'bg-white rounded-xl p-3 shadow-sm hover:shadow-md cursor-pointer transition border border-slate-200',
                       draggingId === d.id && 'opacity-40'

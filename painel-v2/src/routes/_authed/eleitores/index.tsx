@@ -3,6 +3,7 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import { useMemo, useRef, useState } from 'react'
 import { Plus, Search, Phone } from 'lucide-react'
 import { useEleitores } from '@/features/eleitores/hooks'
+import { EleitorModal } from '@/features/eleitores/components/EleitorModal'
 import type { Eleitor } from '@/lib/database.types'
 import { cn, iniciais, chatIdDe, formatTelefone } from '@/lib/utils'
 
@@ -15,6 +16,17 @@ function EleitoresPage() {
   const [busca, setBusca] = useState('')
   const [filtroEnvolvimento, setFiltroEnvolvimento] = useState('')
   const [filtroBairro, setFiltroBairro] = useState('')
+  const [modalOpen, setModalOpen] = useState(false)
+  const [eleitorEditando, setEleitorEditando] = useState<Eleitor | null>(null)
+
+  function novoEleitor() {
+    setEleitorEditando(null)
+    setModalOpen(true)
+  }
+  function editarEleitor(e: Eleitor) {
+    setEleitorEditando(e)
+    setModalOpen(true)
+  }
 
   const bairros = useMemo(() => {
     if (!eleitores) return []
@@ -51,10 +63,12 @@ function EleitoresPage() {
           <div className="text-sm text-slate-500">Cadastro › Contatos</div>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-800 mt-1">Eleitores</h1>
         </div>
-        <button className="bg-marco-azul text-white font-bold px-5 py-2.5 rounded-lg hover:bg-marco-azul-esc text-sm flex items-center gap-2 self-start">
+        <button onClick={novoEleitor} className="bg-marco-azul text-white font-bold px-5 py-2.5 rounded-lg hover:bg-marco-azul-esc text-sm flex items-center gap-2 self-start">
           <Plus className="w-4 h-4" /> Novo eleitor
         </button>
       </div>
+
+      <EleitorModal open={modalOpen} onClose={() => setModalOpen(false)} eleitor={eleitorEditando} />
 
       {/* Filtros */}
       <div className="bg-white rounded-2xl ring-soft p-4 mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -125,7 +139,7 @@ function EleitoresPage() {
                     height: virtualRow.size,
                   }}
                 >
-                  <EleitorRow eleitor={e} />
+                  <EleitorRow eleitor={e} onEdit={editarEleitor} />
                 </div>
               )
             })}
@@ -136,17 +150,16 @@ function EleitoresPage() {
   )
 }
 
-function EleitorRow({ eleitor: e }: { eleitor: Eleitor }) {
+function EleitorRow({ eleitor: e, onEdit }: { eleitor: Eleitor; onEdit: (e: Eleitor) => void }) {
   const chatId = chatIdDe(e.telefone)
 
   function abrirWhatsApp() {
     if (!chatId) return
-    // TODO: integrar com WAHA
     window.open(`https://wa.me/${chatId.replace('@c.us', '')}`, '_blank')
   }
 
   return (
-    <div className="px-3 sm:px-4 py-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 border-b border-slate-100">
+    <div onClick={() => onEdit(e)} className="px-3 sm:px-4 py-3 hover:bg-slate-50 cursor-pointer flex items-center gap-3 border-b border-slate-100">
       <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-marco-azul text-white font-bold flex items-center justify-center flex-shrink-0">
         {iniciais(e.nome)}
       </div>
