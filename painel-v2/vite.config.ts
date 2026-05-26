@@ -19,4 +19,22 @@ export default defineConfig({
     port: 5173,
     host: true,
   },
+  build: {
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('@supabase')) return 'vendor-supabase'
+            if (id.includes('@tanstack/react-router')) return 'vendor-router'
+            if (id.includes('@tanstack/react-query')) return 'vendor-query'
+            if (id.includes('@tanstack/react-virtual')) return 'vendor-virtual'
+            if (id.includes('lucide-react')) return 'vendor-icons'
+            if (id.includes('react-dom') || id.includes('react/')) return 'vendor-react'
+            return 'vendor'
+          }
+        },
+      },
+    },
+  },
 })

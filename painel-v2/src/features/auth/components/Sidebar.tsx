@@ -37,6 +37,7 @@ const navItems: NavItem[] = [
         { id: 'automacoes', label: 'Automações', to: '/pro/automacoes' },
         { id: 'trafego', label: 'Tráfego pago', to: '/pro/trafego' },
         { id: 'ia', label: 'Atendimento por IA', to: '/pro/ia' },
+        { id: 'analise', label: 'IA analisa mandato', to: '/pro/analise' },
       ]
     }
   },

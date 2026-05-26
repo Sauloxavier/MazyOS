@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
+import { Route as AuthedUsuariosRouteImport } from './routes/_authed/usuarios'
 import { Route as AuthedPainelGeralRouteImport } from './routes/_authed/painel-geral'
 import { Route as AuthedNotificacoesRouteImport } from './routes/_authed/notificacoes'
 import { Route as AuthedInboxRouteImport } from './routes/_authed/inbox'
@@ -43,6 +44,11 @@ const AuthedRoute = AuthedRouteImport.update({
 const AuthedIndexRoute = AuthedIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedUsuariosRoute = AuthedUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
   getParentRoute: () => AuthedRoute,
 } as any)
 const AuthedPainelGeralRoute = AuthedPainelGeralRouteImport.update({
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/inbox': typeof AuthedInboxRoute
   '/notificacoes': typeof AuthedNotificacoesRoute
   '/painel-geral': typeof AuthedPainelGeralRoute
+  '/usuarios': typeof AuthedUsuariosRoute
   '/parlamentar/emendas': typeof AuthedParlamentarEmendasRoute
   '/parlamentar/proposituras': typeof AuthedParlamentarPropositurasRoute
   '/pro/analise': typeof AuthedProAnaliseRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/inbox': typeof AuthedInboxRoute
   '/notificacoes': typeof AuthedNotificacoesRoute
   '/painel-geral': typeof AuthedPainelGeralRoute
+  '/usuarios': typeof AuthedUsuariosRoute
   '/': typeof AuthedIndexRoute
   '/parlamentar/emendas': typeof AuthedParlamentarEmendasRoute
   '/parlamentar/proposituras': typeof AuthedParlamentarPropositurasRoute
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/_authed/inbox': typeof AuthedInboxRoute
   '/_authed/notificacoes': typeof AuthedNotificacoesRoute
   '/_authed/painel-geral': typeof AuthedPainelGeralRoute
+  '/_authed/usuarios': typeof AuthedUsuariosRoute
   '/_authed/': typeof AuthedIndexRoute
   '/_authed/parlamentar/emendas': typeof AuthedParlamentarEmendasRoute
   '/_authed/parlamentar/proposituras': typeof AuthedParlamentarPropositurasRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/notificacoes'
     | '/painel-geral'
+    | '/usuarios'
     | '/parlamentar/emendas'
     | '/parlamentar/proposituras'
     | '/pro/analise'
@@ -241,6 +251,7 @@ export interface FileRouteTypes {
     | '/inbox'
     | '/notificacoes'
     | '/painel-geral'
+    | '/usuarios'
     | '/'
     | '/parlamentar/emendas'
     | '/parlamentar/proposituras'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/_authed/inbox'
     | '/_authed/notificacoes'
     | '/_authed/painel-geral'
+    | '/_authed/usuarios'
     | '/_authed/'
     | '/_authed/parlamentar/emendas'
     | '/_authed/parlamentar/proposituras'
@@ -302,6 +314,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthedIndexRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/usuarios': {
+      id: '/_authed/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof AuthedUsuariosRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/_authed/painel-geral': {
@@ -443,6 +462,7 @@ interface AuthedRouteChildren {
   AuthedInboxRoute: typeof AuthedInboxRoute
   AuthedNotificacoesRoute: typeof AuthedNotificacoesRoute
   AuthedPainelGeralRoute: typeof AuthedPainelGeralRoute
+  AuthedUsuariosRoute: typeof AuthedUsuariosRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
   AuthedParlamentarEmendasRoute: typeof AuthedParlamentarEmendasRoute
   AuthedParlamentarPropositurasRoute: typeof AuthedParlamentarPropositurasRoute
@@ -465,6 +485,7 @@ const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedInboxRoute: AuthedInboxRoute,
   AuthedNotificacoesRoute: AuthedNotificacoesRoute,
   AuthedPainelGeralRoute: AuthedPainelGeralRoute,
+  AuthedUsuariosRoute: AuthedUsuariosRoute,
   AuthedIndexRoute: AuthedIndexRoute,
   AuthedParlamentarEmendasRoute: AuthedParlamentarEmendasRoute,
   AuthedParlamentarPropositurasRoute: AuthedParlamentarPropositurasRoute,

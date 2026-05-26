@@ -9,6 +9,8 @@ import { get, set, del } from 'idb-keyval'
 import './index.css'
 import { routeTree } from './routeTree.gen'
 import { useAuth } from './store/auth'
+import { ToastContainer } from './components/ui/Toast'
+import { ErrorBoundary } from './components/ui/ErrorBoundary'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,16 +67,19 @@ function AppRoot() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PersistQueryClientProvider
-      client={queryClient}
-      persistOptions={{
-        persister,
-        maxAge: 24 * 60 * 60 * 1000,
-        buster: 'v2-2026-05-26',
-      }}
-    >
-      <AppRoot />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </PersistQueryClientProvider>
+    <ErrorBoundary>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          persister,
+          maxAge: 24 * 60 * 60 * 1000,
+          buster: 'v2-2026-05-26',
+        }}
+      >
+        <AppRoot />
+        <ToastContainer />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </PersistQueryClientProvider>
+    </ErrorBoundary>
   </StrictMode>
 )

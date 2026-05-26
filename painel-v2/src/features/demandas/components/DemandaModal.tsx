@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Save, Trash2 } from 'lucide-react'
 import { Modal } from '@/components/ui/Modal'
+import { toast } from '@/components/ui/Toast'
 import { useSalvarDemanda, useDeletarDemanda } from '@/features/demandas/hooks'
 import { useEleitores } from '@/features/eleitores/hooks'
 import type { Demanda, DemandaInsert } from '@/lib/database.types'
@@ -84,9 +85,10 @@ export function DemandaModal({ open, onClose, demanda, eleitorIdInicial, statusI
     if (!form.eleitor_id || !form.tipo || !form.descricao.trim()) return
     try {
       await salvar.mutateAsync({ id: demanda?.id, ...form })
+      toast.success(demanda ? 'Atendimento atualizado' : 'Atendimento cadastrado')
       onClose()
     } catch (err) {
-      alert('Erro ao salvar: ' + (err as Error).message)
+      toast.error('Erro ao salvar: ' + (err as Error).message)
     }
   }
 
@@ -94,6 +96,7 @@ export function DemandaModal({ open, onClose, demanda, eleitorIdInicial, statusI
     if (!demanda) return
     if (!confirm('Excluir esse atendimento?')) return
     await deletar.mutateAsync(demanda.id)
+    toast.success('Atendimento excluído')
     onClose()
   }
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Save, Trash2 } from 'lucide-react'
 import { Modal } from '@/components/ui/Modal'
+import { toast } from '@/components/ui/Toast'
 import { useSalvarEleitor, useDeletarEleitor } from '@/features/eleitores/hooks'
 import { useConfig } from '@/features/config/hooks'
 import type { Eleitor, EleitorInsert, Envolvimento } from '@/lib/database.types'
@@ -70,9 +71,10 @@ export function EleitorModal({ open, onClose, eleitor }: Props) {
     if (!form.nome.trim()) return
     try {
       await salvar.mutateAsync({ id: eleitor?.id, ...form })
+      toast.success(eleitor ? 'Eleitor atualizado' : 'Eleitor cadastrado')
       onClose()
     } catch (err) {
-      alert('Erro ao salvar: ' + (err as Error).message)
+      toast.error('Erro ao salvar: ' + (err as Error).message)
     }
   }
 
@@ -81,9 +83,10 @@ export function EleitorModal({ open, onClose, eleitor }: Props) {
     if (!confirm(`Excluir ${eleitor.nome}? Os atendimentos vinculados continuam.`)) return
     try {
       await deletar.mutateAsync(eleitor.id)
+      toast.success('Eleitor excluído')
       onClose()
     } catch (err) {
-      alert('Erro ao excluir: ' + (err as Error).message)
+      toast.error('Erro ao excluir: ' + (err as Error).message)
     }
   }
 
