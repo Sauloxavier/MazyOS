@@ -1,0 +1,62 @@
+{
+  "name": "Painel Gabinete Marco Xavier",
+  "short_name": "Gabinete MX",
+  "description": "Painel de gestão do mandato do Vereador Marco Xavier — Limeira-SP",
+  "id": "/gabinete-marco-xavier",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
+  "background_color": "#F5F7FB",
+  "theme_color": "#1E5BBA",
+  "orientation": "any",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Conversas WhatsApp",
+      "short_name": "Conversas",
+      "url": "./index.html#conversas",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Caixa de Entrada",
+      "short_name": "Inbox",
+      "url": "./index.html#inbox",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Agenda",
+      "short_name": "Agenda",
+      "url": "./index.html#agenda",
+      "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "lang": "pt-BR",
+  "categories": ["productivity", "business"]
+}

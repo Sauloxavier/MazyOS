@@ -1,0 +1,116 @@
+{
+  "name": "MX — Atendimento por IA",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mx-atendimento-ia",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh-ia",
+      "name": "Webhook: mensagem recebida",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "mx-atendimento-ia"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            { "name": "openaiKey",     "value": "={{ $json.body.openaiKey }}" },
+            { "name": "openaiModel",   "value": "={{ $json.body.openaiModel || 'gpt-4o-mini' }}" },
+            { "name": "prompt",        "value": "={{ $json.body.prompt }}" },
+            { "name": "msgEleitor",    "value": "={{ $json.body.mensagem }}" },
+            { "name": "nomeEleitor",   "value": "={{ $json.body.nome || '' }}" },
+            { "name": "chatId",        "value": "={{ $json.body.chatId }}" },
+            { "name": "wahaUrl",       "value": "={{ $json.body.wahaUrl }}" },
+            { "name": "wahaApiKey",    "value": "={{ $json.body.wahaApiKey || '' }}" },
+            { "name": "session",       "value": "={{ $json.body.wahaSession || 'default' }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ctx",
+      "name": "Contexto",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.openaiKey }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"{{ $json.openaiModel }}\",\n  \"messages\": [\n    { \"role\": \"system\", \"content\": {{ JSON.stringify($json.prompt) }} },\n    { \"role\": \"user\", \"content\": {{ JSON.stringify(($json.nomeEleitor ? ($json.nomeEleitor + ': ') : '') + $json.msgEleitor) }} }\n  ],\n  \"temperature\": 0.7\n}",
+        "options": { "timeout": 30000 }
+      },
+      "id": "openai",
+      "name": "OpenAI: gerar resposta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const ctx = $('Contexto').first().json;\nconst data = $json;\nconst resposta = data?.choices?.[0]?.message?.content?.trim() || '(sem resposta)';\nreturn { json: { ...ctx, resposta } };"
+      },
+      "id": "merge",
+      "name": "Montar resposta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.wahaUrl }}/api/sendText",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "={{ $json.wahaApiKey }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"session\": \"{{ $json.session }}\",\n  \"chatId\": \"{{ $json.chatId }}\",\n  \"text\": {{ JSON.stringify($json.resposta) }}\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "waha",
+      "name": "WAHA: enviar resposta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ok\": true, \"resposta\": $json.resposta }"
+      },
+      "id": "resp",
+      "name": "Responder ao painel",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1200, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: mensagem recebida": { "main": [[{ "node": "Contexto", "type": "main", "index": 0 }]] },
+    "Contexto":                   { "main": [[{ "node": "OpenAI: gerar resposta", "type": "main", "index": 0 }]] },
+    "OpenAI: gerar resposta":     { "main": [[{ "node": "Montar resposta", "type": "main", "index": 0 }]] },
+    "Montar resposta":            { "main": [[{ "node": "WAHA: enviar resposta", "type": "main", "index": 0 }]] },
+    "WAHA: enviar resposta":      { "main": [[{ "node": "Responder ao painel", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false
+}

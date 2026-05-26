@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Faça sua solicitação — Vereador Marco Xavier</title>
+<meta name="description" content="Envie sua solicitação direto pro gabinete do Vereador Marco Xavier. Atendimento sério, próximo e resolutivo."/>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1E5BBA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Marco Xavier">
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      marco: { azul: '#1E5BBA', azulEsc: '#0E3A8A', amarelo: '#FACC15', amareloEsc: '#EAB308' }
+    },
+    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+  }}
+}
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  [x-cloak] { display: none !important; }
+  .hero-bg { background: linear-gradient(135deg, #1E5BBA 0%, #0E3A8A 100%); }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800" x-data="formPublico()" x-cloak>
+
+<!-- HERO -->
+<header class="hero-bg text-white">
+  <div class="max-w-3xl mx-auto px-6 pt-10 pb-12 lg:pt-16 lg:pb-16 text-center">
+    <img src="logo.png" alt="Marco Xavier Vereador" class="h-20 lg:h-28 mx-auto mb-6 brightness-0 invert"/>
+    <h1 class="text-3xl lg:text-5xl font-black leading-tight">Fala diretamente <br/>com o gabinete</h1>
+    <p class="text-marco-amarelo font-semibold text-lg mt-3">Aqui em Limeira, sua voz importa.</p>
+    <p class="text-white/85 mt-2 max-w-xl mx-auto">Conte o que precisa. A equipe do mandato analisa sua solicitação e te retorna no WhatsApp.</p>
+  </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-4 lg:px-6 -mt-8 pb-16">
+
+  <!-- SUCESSO -->
+  <template x-if="enviado">
+    <div class="bg-white rounded-3xl shadow-xl p-8 lg:p-12 text-center">
+      <div class="w-20 h-20 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6">
+        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h2 class="text-2xl lg:text-3xl font-black text-marco-azul mb-2">Solicitação recebida!</h2>
+      <p class="text-slate-600 max-w-md mx-auto">Obrigado, <strong x-text="ultimoEnvio.nome?.split(' ')[0]"></strong>. Recebemos sua mensagem aqui no gabinete.</p>
+
+      <div class="bg-slate-50 rounded-2xl p-5 mt-6 inline-block">
+        <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">Seu protocolo</div>
+        <div class="text-2xl font-black text-marco-azul mt-1" x-text="ultimoEnvio.protocolo"></div>
+        <div class="text-xs text-slate-400 mt-1">Guarde esse número pra consulta.</div>
+      </div>
+
+      <div class="mt-8 space-y-3">
+        <p class="text-sm text-slate-500">Nossa equipe vai analisar e te responder o quanto antes.</p>
+        <button @click="resetar()" class="bg-marco-azul hover:bg-marco-azulEsc text-white font-bold px-6 py-3 rounded-xl">
+          Fazer outra solicitação
+        </button>
+      </div>
+    </div>
+  </template>
+
+  <!-- FORMULÁRIO -->
+  <template x-if="!enviado">
+    <form @submit.prevent="enviar()" class="bg-white rounded-3xl shadow-xl p-6 lg:p-10 space-y-6">
+
+      <div>
+        <h2 class="text-2xl font-black text-slate-800 mb-1">Conta pra gente</h2>
+        <p class="text-sm text-slate-500">Preencha os campos abaixo. Campos com * são obrigatórios.</p>
+      </div>
+
+      <!-- Identificação -->
+      <div class="space-y-4">
+        <div>
+          <label class="text-sm font-bold text-slate-700">Nome completo *</label>
+          <input x-model="form.nome" required placeholder="Como podemos te chamar?"
+                 class="mt-1.5 w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-marco-azul transition"/>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-bold text-slate-700">WhatsApp *</label>
+            <input x-model="form.telefone" required type="tel" placeholder="(19) 9 9999-9999"
+                   @input="form.telefone = mascararTelefone(form.telefone)"
+                   class="mt-1.5 w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-marco-azul transition"/>
+            <p class="text-xs text-slate-400 mt-1">Vamos te responder por aqui.</p>
+          </div>
+          <div>
+            <label class="text-sm font-bold text-slate-700">Data de nascimento *</label>
+            <input x-model="form.nascimento" required type="date"
+                   class="mt-1.5 w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-marco-azul transition"/>
+            <p class="text-xs text-slate-400 mt-1">Pra mandar parabéns no seu aniversário 🎂</p>
+          </div>
+        </div>
+        <div class="grid lg:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-bold text-slate-700">Email <span class="text-slate-400 font-normal">(opcional)</span></label>
+            <input x-model="form.email" type="email" placeholder="seu@email.com"
+                   class="mt-1.5 w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-marco-azul transition"/>
+          </div>
+          <div>
+            <label class="text-sm font-bold text-slate-700">Rede social <span class="text-slate-400 font-normal">(opcional)</span></label>
+            <input x-model="form.redeSocial" placeholder="@seuinsta ou link do Facebook"
+                   class="mt-1.5 w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-marco-azul transition"/>
+          </div>
+        </div>
+        <div>
+          <label class="text-sm font-bold text-slate-700">Bairro *</label>
+          <input x-model="form.bairro" required list="bairros" placeholder="Onde você mora?"
+                 class="mt-1.5 w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-marco-azul transition"/>
+          <datalist id="bairros">
+            <option value="Vista Alegre"></option>
+            <option value="Novo Horizonte"></option>
+            <option value="Nova Suíça"></option>
+            <option value="Centro"></option>
+            <option value="Jardim Lago Azul"></option>
+          </datalist>
+        </div>
+      </div>
+
+      <hr class="border-slate-100"/>
+
+      <!-- Solicitação -->
+      <div class="space-y-4">
+        <div>
+          <label class="text-sm font-bold text-slate-700">Tipo de solicitação *</label>
+          <div class="mt-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
+            <template x-for="t in tipos" :key="t.id">
+              <button type="button" @click="form.tipo = t.id"
+                      :class="form.tipo === t.id ? 'bg-marco-azul text-white border-marco-azul' : 'bg-white text-slate-700 border-slate-200 hover:border-marco-azul'"
+                      class="flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition text-center">
+                <span class="text-2xl" x-text="t.icone"></span>
+                <span class="text-xs font-bold" x-text="t.nome"></span>
+              </button>
+            </template>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-sm font-bold text-slate-700">Descreva sua solicitação *</label>
+          <textarea x-model="form.descricao" required rows="5" placeholder="Conte com detalhes: o que está acontecendo, onde, há quanto tempo..."
+                    class="mt-1.5 w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-marco-azul transition resize-none"></textarea>
+          <p class="text-xs text-slate-400 mt-1">Quanto mais detalhe, mais rápido conseguimos resolver.</p>
+        </div>
+
+        <div>
+          <label class="text-sm font-bold text-slate-700">Endereço da ocorrência <span class="text-slate-400 font-normal">(opcional)</span></label>
+          <input x-model="form.endereco" placeholder="Rua, número, ponto de referência"
+                 class="mt-1.5 w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-marco-azul transition"/>
+        </div>
+
+        <div>
+          <label class="text-sm font-bold text-slate-700">Anexar arquivo <span class="text-slate-400 font-normal">(opcional, até 10MB cada)</span></label>
+          <p class="text-xs text-slate-500 mt-1">Fotos, PDFs, documentos. Quanto mais provas, melhor pra resolver.</p>
+          <label class="mt-2 flex items-center justify-center gap-2 cursor-pointer border-2 border-dashed border-slate-300 hover:border-marco-azul hover:bg-marco-azul/5 rounded-xl p-4 transition">
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+            <span class="text-sm font-semibold text-slate-700">Escolher arquivos</span>
+            <input type="file" multiple @change="handleAnexo($event)" class="hidden"/>
+          </label>
+          <div x-show="(form.anexos || []).length > 0" class="mt-2 space-y-2">
+            <template x-for="(a, ai) in form.anexos" :key="ai">
+              <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-2.5 border border-slate-200">
+                <div class="text-xl flex-shrink-0">📎</div>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold text-slate-800 truncate" x-text="a.nome"></div>
+                  <div class="text-xs text-slate-500" x-text="(a.tamanho / 1024).toFixed(0) + ' KB'"></div>
+                </div>
+                <button type="button" @click="form.anexos.splice(ai, 1)" class="text-rose-500 hover:bg-rose-50 p-1.5 rounded">×</button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-slate-100"/>
+
+      <!-- LGPD -->
+      <div class="bg-slate-50 rounded-xl p-4">
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" x-model="form.consentimento" required class="mt-1 w-5 h-5 accent-marco-azul"/>
+          <span class="text-sm text-slate-600">
+            Autorizo o gabinete do Vereador Marco Xavier a entrar em contato pelos meios informados, e a guardar meus dados pra acompanhar essa solicitação. Posso pedir exclusão dos meus dados a qualquer momento.
+          </span>
+        </label>
+      </div>
+
+      <!-- Erro -->
+      <div x-show="erro" class="bg-rose-50 border border-rose-200 text-rose-700 text-sm p-4 rounded-xl">
+        <strong>Erro:</strong> <span x-text="erro"></span>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" :disabled="enviando"
+              class="w-full bg-marco-azul hover:bg-marco-azulEsc text-white font-black text-lg py-4 rounded-2xl transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        <span x-show="!enviando">Enviar minha solicitação</span>
+        <span x-show="enviando" class="flex items-center gap-2">
+          <span class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          Enviando…
+        </span>
+      </button>
+
+      <p class="text-center text-xs text-slate-400">
+        Seus dados são tratados conforme a LGPD.
+      </p>
+    </form>
+  </template>
+
+  <!-- Rodapé -->
+  <footer class="mt-10 text-center text-sm text-slate-400 space-y-1">
+    <div>Gabinete do Vereador <strong class="text-marco-azul">Marco Xavier</strong> — Limeira-SP</div>
+    <div>📧 marcoxavier@limeira.sp.leg.br · ☎ (19) 3404-7503</div>
+  </footer>
+</main>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// ========================================
+// CONFIG SUPABASE — preencha pra o form enviar direto pro banco.
+// Se ficar vazio, salva no localStorage do navegador (modo local).
+// ========================================
+const SUPABASE_URL = '';      // ex: https://iamob-supabase.fqejv1.easypanel.host
+const SUPABASE_ANON_KEY = ''; // ANON KEY pública
+
+const SB = (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
+function formPublico() {
+  return {
+    enviando: false,
+    enviado: false,
+    erro: null,
+    ultimoEnvio: {},
+    form: emptyForm(),
+    tipos: [
+      { id: 'Saúde',                icone: '🏥' },
+      { id: 'Educação',             icone: '🎓' },
+      { id: 'Iluminação',           icone: '💡' },
+      { id: 'Asfalto / Buraco',     icone: '🛣️' },
+      { id: 'Limpeza pública',      icone: '🧹' },
+      { id: 'Esporte / Cultura',    icone: '⚽' },
+      { id: 'Assistência social',   icone: '🤝' },
+      { id: 'Transporte',           icone: '🚌' },
+      { id: 'Segurança',            icone: '🚨' },
+      { id: 'Documentação',         icone: '📄' },
+      { id: 'Iniciativa Comunidade',icone: '🌳' },
+      { id: 'Outro',                icone: '✏️' },
+    ],
+
+    handleAnexo(ev) {
+      const files = Array.from(ev.target.files || []);
+      if (!this.form.anexos) this.form.anexos = [];
+      const LIMITE = 10 * 1024 * 1024; // 10MB
+      files.forEach(file => {
+        if (file.size > LIMITE) {
+          alert(`"${file.name}" tem ${(file.size/1024/1024).toFixed(1)}MB. O limite é 10MB.`);
+          return;
+        }
+        this.form.anexos.push({ file, nome: file.name, tamanho: file.size, tipo: file.type });
+      });
+      ev.target.value = '';
+    },
+    mascararTelefone(v) {
+      const n = (v || '').replace(/\D/g, '').slice(0, 11);
+      if (n.length <= 2) return n;
+      if (n.length <= 7) return `(${n.slice(0,2)}) ${n.slice(2)}`;
+      if (n.length <= 10) return `(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`;
+      return `(${n.slice(0,2)}) ${n.slice(2,3)} ${n.slice(3,7)}-${n.slice(7)}`;
+    },
+
+    async enviar() {
+      this.erro = null;
+      if (!this.form.consentimento) { this.erro = 'É necessário autorizar o contato.'; return; }
+      if (!this.form.tipo) { this.erro = 'Selecione o tipo de solicitação.'; return; }
+      this.enviando = true;
+
+      try {
+        const protocolo = gerarProtocolo();
+        const solicitacao = {
+          id: uid(),
+          protocolo,
+          ...this.form,
+          enviadoEm: new Date().toISOString(),
+          status: 'pendente',
+          origem: 'Site público',
+          ip: null,
+        };
+
+        // === Persistência ===
+        if (SB) {
+          // Insere a solicitação
+          const { data: inserted, error } = await SB.from('solicitacoes').insert({
+            protocolo: solicitacao.protocolo,
+            nome: solicitacao.nome,
+            telefone: solicitacao.telefone,
+            nascimento: solicitacao.nascimento || null,
+            email: solicitacao.email || null,
+            rede_social: solicitacao.redeSocial || null,
+            bairro: solicitacao.bairro || null,
+            tipo: solicitacao.tipo,
+            descricao: solicitacao.descricao,
+            endereco: solicitacao.endereco || null,
+            consentimento: !!solicitacao.consentimento,
+            status: 'pendente',
+            origem: 'Site público',
+          }).select().single();
+          if (error) throw error;
+
+          // Upload de anexos para o bucket 'anexos' (subpasta solicitacao/{id})
+          if (this.form.anexos && this.form.anexos.length > 0) {
+            for (const a of this.form.anexos) {
+              const path = `solicitacao/${inserted.id}/${Date.now()}-${a.file.name}`;
+              const { error: upErr } = await SB.storage.from('anexos').upload(path, a.file, {
+                contentType: a.file.type, upsert: false,
+              });
+              if (upErr) console.warn('[anexo]', upErr);
+            }
+          }
+        } else {
+          // Modo local: localStorage + BroadcastChannel
+          const lista = JSON.parse(localStorage.getItem('mx_solicitacoes') || '[]');
+          lista.push(solicitacao);
+          localStorage.setItem('mx_solicitacoes', JSON.stringify(lista));
+          try {
+            const ch = new BroadcastChannel('mx-painel');
+            ch.postMessage({ tipo: 'nova-solicitacao', payload: solicitacao });
+            ch.close();
+          } catch {}
+          await new Promise(r => setTimeout(r, 600));
+        }
+
+        this.ultimoEnvio = solicitacao;
+        this.enviado = true;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        this.erro = 'Falha ao enviar. Tente novamente em alguns instantes.';
+        console.error(err);
+      } finally {
+        this.enviando = false;
+      }
+    },
+
+    resetar() {
+      this.form = emptyForm();
+      this.enviado = false;
+      this.ultimoEnvio = {};
+      this.erro = null;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+  };
+}
+
+function emptyForm() {
+  return {
+    nome: '', telefone: '', nascimento: '', email: '', redeSocial: '', bairro: '',
+    tipo: '', descricao: '', endereco: '',
+    consentimento: false,
+    anexos: [],
+  };
+}
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+function gerarProtocolo() {
+  const d = new Date();
+  const yyyymmdd = d.getFullYear().toString() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `MX-${yyyymmdd}-${rand}`;
+}
+</script>
+</body>
+</html>

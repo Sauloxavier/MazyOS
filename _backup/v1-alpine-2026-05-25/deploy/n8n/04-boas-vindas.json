@@ -1,0 +1,69 @@
+{
+  "name": "MX — Boas-vindas",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mx-boas-vindas",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh",
+      "name": "Webhook: novo eleitor",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "mx-boas-vindas"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $json.body || {};\nconst nome = b.nome || '';\nconst primeiro = nome.split(' ')[0] || '';\nconst tpl = b.mensagem || 'Olá {{primeiro_nome}}! 👋 Bem-vindo(a) ao gabinete do vereador Marco Xavier. Conta comigo aqui pra o que precisar. — Marco';\nconst texto = tpl\n  .replace(/\\{\\{nome\\}\\}/g, nome)\n  .replace(/\\{\\{primeiro_nome\\}\\}/g, primeiro)\n  .replace(/\\{\\{bairro\\}\\}/g, b.bairro || '');\nreturn { json: {\n  chatId: b.chatId || (function(){ const n = (b.telefone || '').replace(/\\D/g, ''); return (n.startsWith('55') ? n : '55' + n) + '@c.us'; })(),\n  texto,\n  wahaUrl: b.wahaUrl,\n  wahaApiKey: b.wahaApiKey || '',\n  session: b.wahaSession || 'default',\n}};"
+      },
+      "id": "msg",
+      "name": "Render mensagem",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.wahaUrl }}/api/sendText",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "={{ $json.wahaApiKey }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"session\": \"{{ $json.session }}\",\n  \"chatId\": \"{{ $json.chatId }}\",\n  \"text\": {{ JSON.stringify($json.texto) }}\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "waha",
+      "name": "WAHA: enviar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ok\": true }"
+      },
+      "id": "resp",
+      "name": "OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [800, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: novo eleitor": { "main": [[{ "node": "Render mensagem", "type": "main", "index": 0 }]] },
+    "Render mensagem":       { "main": [[{ "node": "WAHA: enviar", "type": "main", "index": 0 }]] },
+    "WAHA: enviar":          { "main": [[{ "node": "OK", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false
+}

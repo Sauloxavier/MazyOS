@@ -1,0 +1,25 @@
+{
+  "name": "marcoxavier-noticias-limeira",
+  "version": "1.0.0",
+  "description": "Coletor de notícias de Limeira-SP pra alimentar pautas do gabinete",
+  "main": "index.js",
+  "bin": {
+    "noticias-limeira": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "saude":     "node index.js --topico saude --salvar",
+    "educacao":  "node index.js --topico educacao --salvar",
+    "seguranca": "node index.js --topico seguranca --salvar",
+    "obras":     "node index.js --topico obras --salvar",
+    "cultura":   "node index.js --topico cultura --salvar",
+    "camara":    "node index.js --topico camara --salvar"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

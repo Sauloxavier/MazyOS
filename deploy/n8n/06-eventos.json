@@ -1,0 +1,73 @@
+{
+  "name": "MX — Eventos (novas demandas/solicitações)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mx-nova-demanda",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "wh-demanda",
+      "name": "Webhook: nova demanda",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 200],
+      "webhookId": "mx-nova-demanda"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mx-nova-solicitacao",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "wh-solic",
+      "name": "Webhook: nova solicitação",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "webhookId": "mx-nova-solicitacao"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega o evento, formata mensagem pra equipe via WhatsApp (grupo do gabinete)\nconst b = $json.body || {};\nconst tipo = b.workflow === 'novaDemanda' ? '📋 Nova demanda' : '📨 Nova solicitação';\nconst linhas = [tipo, '', `Quem: ${b.nome || '—'}`, `Telefone: ${b.telefone || '—'}`];\nif (b.descricao)   linhas.push('', b.descricao);\nif (b.protocolo)   linhas.push('', `Protocolo: ${b.protocolo}`);\nif (b.bairro)      linhas.push(`Bairro: ${b.bairro}`);\nreturn { json: {\n  texto: linhas.join('\\n'),\n  destino: b.grupoEquipe || b.chatId,\n  wahaUrl: b.wahaUrl,\n  wahaApiKey: b.wahaApiKey || '',\n  session: b.wahaSession || 'default',\n}};"
+      },
+      "id": "format",
+      "name": "Formatar mensagem",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.wahaUrl }}/api/sendText",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "={{ $json.wahaApiKey }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"session\": \"{{ $json.session }}\",\n  \"chatId\": \"{{ $json.destino }}\",\n  \"text\": {{ JSON.stringify($json.texto) }}\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "waha",
+      "name": "WAHA: avisar equipe",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [800, 300],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "Webhook: nova demanda":     { "main": [[{ "node": "Formatar mensagem", "type": "main", "index": 0 }]] },
+    "Webhook: nova solicitação": { "main": [[{ "node": "Formatar mensagem", "type": "main", "index": 0 }]] },
+    "Formatar mensagem":         { "main": [[{ "node": "WAHA: avisar equipe", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false
+}

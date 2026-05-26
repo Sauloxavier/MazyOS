@@ -1,0 +1,69 @@
+{
+  "name": "MX — IA analisa mandato",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mx-analise-ia",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh",
+      "name": "Webhook: receber dados",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "mx-analise-ia"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $json.body || {};\nconst dados = b.dados || {};\nconst resumo = `Contexto do mandato Marco Xavier (vereador Limeira-SP):\\n` +\n  `- Eleitores cadastrados: ${dados.totalEleitores || 0}\\n` +\n  `- Atendimentos abertos: ${dados.demandasAbertas || 0}\\n` +\n  `- Atendimentos resolvidos: ${dados.demandasResolvidas || 0}\\n` +\n  `- Top bairros: ${(dados.topBairros || []).join(', ')}\\n` +\n  `- Top tipos de demanda: ${(dados.topTipos || []).join(', ')}\\n` +\n  `- Conquistados: ${dados.conquistados || 0} de meta ${dados.metaConquistados || 0}\\n`;\nreturn { json: {\n  openaiKey: b.openaiKey,\n  openaiModel: b.openaiModel || 'gpt-4o-mini',\n  prompt: b.prompt || 'Analise estes dados do mandato e produza um diagnóstico em 5 pontos: (1) onde estamos fortes, (2) onde precisamos atuar mais, (3) próximos passos práticos pra próximos 30 dias, (4) riscos, (5) oportunidades. Tom direto, sem jargão político.',\n  resumo,\n}};"
+      },
+      "id": "prep",
+      "name": "Preparar contexto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.openaiKey }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"{{ $json.openaiModel }}\",\n  \"messages\": [\n    { \"role\": \"system\", \"content\": {{ JSON.stringify($json.prompt) }} },\n    { \"role\": \"user\", \"content\": {{ JSON.stringify($json.resumo) }} }\n  ],\n  \"temperature\": 0.4\n}",
+        "options": { "timeout": 60000 }
+      },
+      "id": "openai",
+      "name": "OpenAI: analisar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ok\": true, \"analise\": $json?.choices?.[0]?.message?.content || '(sem retorno da IA)' }"
+      },
+      "id": "resp",
+      "name": "Retornar análise",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [800, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: receber dados": { "main": [[{ "node": "Preparar contexto", "type": "main", "index": 0 }]] },
+    "Preparar contexto":      { "main": [[{ "node": "OpenAI: analisar", "type": "main", "index": 0 }]] },
+    "OpenAI: analisar":       { "main": [[{ "node": "Retornar análise", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false
+}

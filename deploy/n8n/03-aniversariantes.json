@@ -1,0 +1,109 @@
+{
+  "name": "MX — Aniversariantes",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mx-aniversario",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh",
+      "name": "Webhook: aniversariantes",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "mx-aniversario"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            { "name": "wahaUrl",    "value": "={{ $json.body.wahaUrl }}" },
+            { "name": "wahaApiKey", "value": "={{ $json.body.wahaApiKey || '' }}" },
+            { "name": "session",    "value": "={{ $json.body.wahaSession || 'default' }}" },
+            { "name": "template",   "value": "={{ $json.body.mensagem }}" }
+          ]
+        }
+      },
+      "id": "ctx",
+      "name": "Contexto",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body.aniversariantes",
+        "options": {}
+      },
+      "id": "split",
+      "name": "Quebrar lista",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const ctx = $('Contexto').first().json;\nconst e = $json;\nconst tpl = ctx.template || 'Feliz aniversário, {{nome}}! 🎂';\nconst texto = tpl\n  .replace(/\\{\\{nome\\}\\}/g, e.nome || '')\n  .replace(/\\{\\{primeiro_nome\\}\\}/g, (e.nome || '').split(' ')[0] || '')\n  .replace(/\\{\\{bairro\\}\\}/g, e.bairro || '');\nreturn { json: {\n  chatId: e.chatId || (function(){ const n = (e.telefone || '').replace(/\\D/g, ''); return (n.startsWith('55') ? n : '55' + n) + '@c.us'; })(),\n  texto, nome: e.nome,\n  wahaUrl: ctx.wahaUrl, wahaApiKey: ctx.wahaApiKey, session: ctx.session,\n}};"
+      },
+      "id": "msg",
+      "name": "Render template",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.wahaUrl }}/api/sendText",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "={{ $json.wahaApiKey }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"session\": \"{{ $json.session }}\",\n  \"chatId\": \"{{ $json.chatId }}\",\n  \"text\": {{ JSON.stringify($json.texto) }}\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "waha",
+      "name": "WAHA: enviar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1000, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": { "amount": 6, "unit": "seconds" },
+      "id": "wait",
+      "name": "Atraso 6s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ok\": true }"
+      },
+      "id": "resp",
+      "name": "OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1400, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: aniversariantes": { "main": [[{ "node": "Contexto", "type": "main", "index": 0 }]] },
+    "Contexto":                 { "main": [[{ "node": "Quebrar lista", "type": "main", "index": 0 }]] },
+    "Quebrar lista":            { "main": [[{ "node": "Render template", "type": "main", "index": 0 }]] },
+    "Render template":          { "main": [[{ "node": "WAHA: enviar", "type": "main", "index": 0 }]] },
+    "WAHA: enviar":             { "main": [[{ "node": "Atraso 6s", "type": "main", "index": 0 }]] },
+    "Atraso 6s":                { "main": [[{ "node": "OK", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false
+}

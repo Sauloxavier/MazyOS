@@ -1,0 +1,115 @@
+{
+  "name": "MX — Disparo em massa",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mx-disparo",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh-disparo",
+      "name": "Webhook: receber lote",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "mx-disparo"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            { "name": "wahaUrl",     "value": "={{ $json.body.wahaUrl  || 'http://waha:3000' }}" },
+            { "name": "wahaApiKey",  "value": "={{ $json.body.wahaApiKey || '' }}" },
+            { "name": "session",     "value": "={{ $json.body.wahaSession || 'default' }}" },
+            { "name": "mensagem",    "value": "={{ $json.body.mensagem }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-ctx",
+      "name": "Contexto",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body.contatos",
+        "options": {}
+      },
+      "id": "split",
+      "name": "Quebrar contatos",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 3,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Personaliza mensagem por contato\nconst ctx = $('Contexto').first().json;\nconst contato = $json;\nconst tpl = ctx.mensagem || '';\nconst texto = tpl\n  .replace(/\\{\\{nome\\}\\}/g, contato.nome || '')\n  .replace(/\\{\\{bairro\\}\\}/g, contato.bairro || '')\n  .replace(/\\{\\{primeiro_nome\\}\\}/g, (contato.nome || '').split(' ')[0] || '');\nreturn {\n  json: {\n    chatId: contato.chatId || (function(){ const n = (contato.telefone || '').replace(/\\D/g, ''); return (n.startsWith('55') ? n : '55' + n) + '@c.us'; })(),\n    texto,\n    nome: contato.nome,\n    wahaUrl: ctx.wahaUrl,\n    wahaApiKey: ctx.wahaApiKey,\n    session: ctx.session,\n  }\n};"
+      },
+      "id": "code-msg",
+      "name": "Render template",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.wahaUrl }}/api/sendText",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Api-Key", "value": "={{ $json.wahaApiKey }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"session\": \"{{ $json.session }}\",\n  \"chatId\": \"{{ $json.chatId }}\",\n  \"text\": {{ JSON.stringify($json.texto) }}\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "waha-send",
+      "name": "WAHA: enviar texto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1000, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "amount": "={{ Math.floor(Math.random() * 12) + 8 }}",
+        "unit": "seconds"
+      },
+      "id": "wait",
+      "name": "Atraso humano (8-20s)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ok\": true, \"enviados\": $items('Quebrar contatos').length }"
+      },
+      "id": "resp",
+      "name": "Responder ao painel",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1400, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: receber lote": { "main": [[{ "node": "Contexto", "type": "main", "index": 0 }]] },
+    "Contexto":              { "main": [[{ "node": "Quebrar contatos", "type": "main", "index": 0 }]] },
+    "Quebrar contatos":      { "main": [[{ "node": "Render template", "type": "main", "index": 0 }]] },
+    "Render template":       { "main": [[{ "node": "WAHA: enviar texto", "type": "main", "index": 0 }]] },
+    "WAHA: enviar texto":    { "main": [[{ "node": "Atraso humano (8-20s)", "type": "main", "index": 0 }]] },
+    "Atraso humano (8-20s)": { "main": [[{ "node": "Responder ao painel", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false
+}

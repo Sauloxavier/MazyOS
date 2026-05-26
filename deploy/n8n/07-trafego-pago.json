@@ -1,0 +1,70 @@
+{
+  "name": "MX — Tráfego pago (gerar criativo)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mx-trafego",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "wh",
+      "name": "Webhook: briefing",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "mx-trafego"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $json.body || {};\nconst contexto = `Briefing do anúncio:\\n` +\n  `- Objetivo: ${b.objetivo || 'engajamento'}\\n` +\n  `- Público-alvo: ${b.publico || 'geral'}\\n` +\n  `- Bairros: ${(b.bairros || []).join(', ') || '—'}\\n` +\n  `- Faixa etária: ${b.idadeMin || 18}-${b.idadeMax || 65}\\n` +\n  `- Gênero: ${b.genero || 'todos'}\\n` +\n  `- Orçamento diário: R$ ${b.budgetDiario || 30}\\n` +\n  `- Duração: ${b.duracaoDias || 7} dias\\n` +\n  `- Formato: ${b.formato || 'carrossel'}\\n` +\n  `- Tema/mensagem: ${b.tema || ''}`;\nreturn { json: {\n  openaiKey: b.openaiKey,\n  openaiModel: b.openaiModel || 'gpt-4o-mini',\n  contexto,\n}};"
+      },
+      "id": "prep",
+      "name": "Preparar briefing",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $json.openaiKey }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"{{ $json.openaiModel }}\",\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"Você é copywriter de tráfego pago do gabinete do vereador Marco Xavier (Limeira-SP, PP). Tom: próximo, popular, direto. Sem jargão político. Sem prometer obra. Apela aos valores de fé, família, união, luta por quem mais precisa. Use frases curtas. Responda APENAS em JSON válido com este formato: { \\\"titulo\\\": \\\"...\\\", \\\"texto_principal\\\": \\\"...\\\", \\\"cta\\\": \\\"Saiba mais\\\" | \\\"Enviar mensagem\\\" | \\\"Seguir\\\", \\\"prompt_imagem\\\": \\\"descrição visual pra criativo\\\", \\\"hashtags\\\": [\\\"#...\\\"] }\" },\n    { \"role\": \"user\", \"content\": {{ JSON.stringify($json.contexto) }} }\n  ],\n  \"temperature\": 0.8,\n  \"response_format\": { \"type\": \"json_object\" }\n}",
+        "options": { "timeout": 45000 }
+      },
+      "id": "openai",
+      "name": "OpenAI: gerar copy",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  const c = $json?.choices?.[0]?.message?.content;\n  let parsed = {};\n  try { parsed = JSON.parse(c); } catch (e) { parsed = { raw: c }; }\n  return { ok: true, criativo: parsed };\n}",
+        "options": {}
+      },
+      "id": "resp",
+      "name": "Retornar criativo",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [800, 300]
+    }
+  ],
+  "connections": {
+    "Webhook: briefing":   { "main": [[{ "node": "Preparar briefing", "type": "main", "index": 0 }]] },
+    "Preparar briefing":   { "main": [[{ "node": "OpenAI: gerar copy", "type": "main", "index": 0 }]] },
+    "OpenAI: gerar copy":  { "main": [[{ "node": "Retornar criativo", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false
+}
