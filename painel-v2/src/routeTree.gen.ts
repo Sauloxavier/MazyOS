@@ -15,6 +15,7 @@ import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
 import { Route as AuthedPainelGeralRouteImport } from './routes/_authed/painel-geral'
 import { Route as AuthedNotificacoesRouteImport } from './routes/_authed/notificacoes'
 import { Route as AuthedInboxRouteImport } from './routes/_authed/inbox'
+import { Route as AuthedImportarRouteImport } from './routes/_authed/importar'
 import { Route as AuthedEnvolvimentoRouteImport } from './routes/_authed/envolvimento'
 import { Route as AuthedConversasRouteImport } from './routes/_authed/conversas'
 import { Route as AuthedConfigRouteImport } from './routes/_authed/config'
@@ -57,6 +58,11 @@ const AuthedNotificacoesRoute = AuthedNotificacoesRouteImport.update({
 const AuthedInboxRoute = AuthedInboxRouteImport.update({
   id: '/inbox',
   path: '/inbox',
+  getParentRoute: () => AuthedRoute,
+} as any)
+const AuthedImportarRoute = AuthedImportarRouteImport.update({
+  id: '/importar',
+  path: '/importar',
   getParentRoute: () => AuthedRoute,
 } as any)
 const AuthedEnvolvimentoRoute = AuthedEnvolvimentoRouteImport.update({
@@ -140,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/config': typeof AuthedConfigRoute
   '/conversas': typeof AuthedConversasRoute
   '/envolvimento': typeof AuthedEnvolvimentoRoute
+  '/importar': typeof AuthedImportarRoute
   '/inbox': typeof AuthedInboxRoute
   '/notificacoes': typeof AuthedNotificacoesRoute
   '/painel-geral': typeof AuthedPainelGeralRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/config': typeof AuthedConfigRoute
   '/conversas': typeof AuthedConversasRoute
   '/envolvimento': typeof AuthedEnvolvimentoRoute
+  '/importar': typeof AuthedImportarRoute
   '/inbox': typeof AuthedInboxRoute
   '/notificacoes': typeof AuthedNotificacoesRoute
   '/painel-geral': typeof AuthedPainelGeralRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/_authed/config': typeof AuthedConfigRoute
   '/_authed/conversas': typeof AuthedConversasRoute
   '/_authed/envolvimento': typeof AuthedEnvolvimentoRoute
+  '/_authed/importar': typeof AuthedImportarRoute
   '/_authed/inbox': typeof AuthedInboxRoute
   '/_authed/notificacoes': typeof AuthedNotificacoesRoute
   '/_authed/painel-geral': typeof AuthedPainelGeralRoute
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/config'
     | '/conversas'
     | '/envolvimento'
+    | '/importar'
     | '/inbox'
     | '/notificacoes'
     | '/painel-geral'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/config'
     | '/conversas'
     | '/envolvimento'
+    | '/importar'
     | '/inbox'
     | '/notificacoes'
     | '/painel-geral'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/_authed/config'
     | '/_authed/conversas'
     | '/_authed/envolvimento'
+    | '/_authed/importar'
     | '/_authed/inbox'
     | '/_authed/notificacoes'
     | '/_authed/painel-geral'
@@ -311,6 +323,13 @@ declare module '@tanstack/react-router' {
       path: '/inbox'
       fullPath: '/inbox'
       preLoaderRoute: typeof AuthedInboxRouteImport
+      parentRoute: typeof AuthedRoute
+    }
+    '/_authed/importar': {
+      id: '/_authed/importar'
+      path: '/importar'
+      fullPath: '/importar'
+      preLoaderRoute: typeof AuthedImportarRouteImport
       parentRoute: typeof AuthedRoute
     }
     '/_authed/envolvimento': {
@@ -420,6 +439,7 @@ interface AuthedRouteChildren {
   AuthedConfigRoute: typeof AuthedConfigRoute
   AuthedConversasRoute: typeof AuthedConversasRoute
   AuthedEnvolvimentoRoute: typeof AuthedEnvolvimentoRoute
+  AuthedImportarRoute: typeof AuthedImportarRoute
   AuthedInboxRoute: typeof AuthedInboxRoute
   AuthedNotificacoesRoute: typeof AuthedNotificacoesRoute
   AuthedPainelGeralRoute: typeof AuthedPainelGeralRoute
@@ -441,6 +461,7 @@ const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedConfigRoute: AuthedConfigRoute,
   AuthedConversasRoute: AuthedConversasRoute,
   AuthedEnvolvimentoRoute: AuthedEnvolvimentoRoute,
+  AuthedImportarRoute: AuthedImportarRoute,
   AuthedInboxRoute: AuthedInboxRoute,
   AuthedNotificacoesRoute: AuthedNotificacoesRoute,
   AuthedPainelGeralRoute: AuthedPainelGeralRoute,

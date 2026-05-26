@@ -25,6 +25,7 @@ const navItems: NavItem[] = [
       id: 'cadastro', items: [
         { id: 'eleitores', label: 'Eleitores', to: '/eleitores' },
         { id: 'atendimentos', label: 'Atendimentos', to: '/atendimentos' },
+        { id: 'importar', label: 'Importar CSV', to: '/importar' },
       ]
     }
   },
