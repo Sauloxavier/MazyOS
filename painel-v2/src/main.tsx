@@ -1,8 +1,11 @@
 import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient } from '@tanstack/react-query'
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { get, set, del } from 'idb-keyval'
 import './index.css'
 import { routeTree } from './routeTree.gen'
 import { useAuth } from './store/auth'
@@ -11,10 +14,22 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 30_000,
+      gcTime: 24 * 60 * 60 * 1000, // 24h - mantém no IndexedDB
       retry: 1,
       refetchOnWindowFocus: false,
     },
   },
+})
+
+// Persister IndexedDB (capacidade gigantes, vs ~5MB do localStorage)
+const persister = createAsyncStoragePersister({
+  storage: {
+    getItem: (key) => get(key).then(v => v ?? null),
+    setItem: (key, value) => set(key, value),
+    removeItem: (key) => del(key),
+  },
+  key: 'mazyos-rq-cache',
+  throttleTime: 1000,
 })
 
 const router = createRouter({
@@ -50,9 +65,16 @@ function AppRoot() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister,
+        maxAge: 24 * 60 * 60 * 1000,
+        buster: 'v2-2026-05-26',
+      }}
+    >
       <AppRoot />
       <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   </StrictMode>
 )
