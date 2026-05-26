@@ -88,11 +88,11 @@ export interface DemandaInsert {
   chat_id?: string | null
 }
 
+// Compat v1: perfis.id é o próprio auth.users.id
 export interface Perfil {
   id: string
-  user_id: string
   nome: string | null
-  email: string
+  email: string | null
   papel: 'admin' | 'assessor'
   avatar_url: string | null
   criado_em: string

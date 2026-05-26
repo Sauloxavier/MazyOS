@@ -47,17 +47,18 @@ export const useAuth = create<AuthState>((set, get) => ({
   async refreshPerfil() {
     const userId = get().user?.id
     if (!userId) { set({ perfil: null }); return }
+    // Compat v1: perfis.id é o próprio user_id
     const { data, error } = await supabase
       .from('perfis')
       .select('*')
-      .eq('user_id', userId)
+      .eq('id', userId)
       .maybeSingle()
     if (error) {
       console.warn('[refreshPerfil]', error)
       set({ perfil: null })
       return
     }
-    set({ perfil: data })
+    set({ perfil: (data ?? null) as any })
   },
 
   isAdmin() {

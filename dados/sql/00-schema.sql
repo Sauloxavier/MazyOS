@@ -1,32 +1,36 @@
 -- ============================================================
--- MazyOS — Schema completo do Supabase
--- Roda esse SQL no SQL Editor pra garantir todas as tabelas
+-- MazyOS — Schema completo do Supabase (defensivo, compatível com v1)
+-- Idempotente: ADD COLUMN IF NOT EXISTS, CREATE TABLE IF NOT EXISTS.
 -- ============================================================
--- Idempotente: usa IF NOT EXISTS, pode rodar várias vezes sem quebrar.
 
--- =============== EXTENSÕES =====================
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- =============== TABELA: perfis ================
+-- ============= perfis (compat v1: id = user_id) =============
+-- v1 criou perfis(id UUID = auth.users.id). Mantemos esse formato.
 CREATE TABLE IF NOT EXISTS perfis (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  id UUID PRIMARY KEY,
+  email TEXT,
   nome TEXT,
-  email TEXT NOT NULL,
-  papel TEXT NOT NULL DEFAULT 'assessor' CHECK (papel IN ('admin', 'assessor')),
+  papel TEXT NOT NULL DEFAULT 'assessor',
   avatar_url TEXT,
   criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-CREATE INDEX IF NOT EXISTS idx_perfis_user_id ON perfis(user_id);
 
--- =============== TABELA: config ================
+-- Garante colunas opcionais (se a tabela já existir sem alguma)
+ALTER TABLE perfis ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE perfis ADD COLUMN IF NOT EXISTS nome TEXT;
+ALTER TABLE perfis ADD COLUMN IF NOT EXISTS papel TEXT NOT NULL DEFAULT 'assessor';
+ALTER TABLE perfis ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE perfis ADD COLUMN IF NOT EXISTS criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW();
+
+-- ============= config ==============
 CREATE TABLE IF NOT EXISTS config (
   chave TEXT PRIMARY KEY,
   valor JSONB,
   atualizado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- =============== TABELA: eleitores =============
+-- ============= eleitores ===========
 CREATE TABLE IF NOT EXISTS eleitores (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   nome TEXT NOT NULL,
@@ -56,7 +60,7 @@ CREATE INDEX IF NOT EXISTS idx_eleitores_telefone ON eleitores(telefone);
 CREATE INDEX IF NOT EXISTS idx_eleitores_bairro ON eleitores(bairro);
 CREATE INDEX IF NOT EXISTS idx_eleitores_envolvimento ON eleitores(envolvimento);
 
--- =============== TABELA: demandas ==============
+-- ============= demandas ============
 CREATE TABLE IF NOT EXISTS demandas (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   eleitor_id UUID NOT NULL REFERENCES eleitores(id) ON DELETE CASCADE,
@@ -79,9 +83,8 @@ CREATE TABLE IF NOT EXISTS demandas (
 CREATE INDEX IF NOT EXISTS idx_demandas_eleitor_id ON demandas(eleitor_id);
 CREATE INDEX IF NOT EXISTS idx_demandas_status ON demandas(status);
 CREATE INDEX IF NOT EXISTS idx_demandas_data ON demandas(data DESC);
-CREATE INDEX IF NOT EXISTS idx_demandas_tipo ON demandas(tipo);
 
--- =============== TABELA: compromissos ==========
+-- ============= compromissos ========
 CREATE TABLE IF NOT EXISTS compromissos (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   titulo TEXT NOT NULL,
@@ -95,7 +98,7 @@ CREATE TABLE IF NOT EXISTS compromissos (
 );
 CREATE INDEX IF NOT EXISTS idx_compromissos_data ON compromissos(data);
 
--- =============== TABELA: proposituras ==========
+-- ============= proposituras ========
 CREATE TABLE IF NOT EXISTS proposituras (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   tipo TEXT NOT NULL,
@@ -112,9 +115,8 @@ CREATE TABLE IF NOT EXISTS proposituras (
   criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_proposituras_ano ON proposituras(ano DESC);
-CREATE INDEX IF NOT EXISTS idx_proposituras_tipo ON proposituras(tipo);
 
--- =============== TABELA: emendas ===============
+-- ============= emendas =============
 CREATE TABLE IF NOT EXISTS emendas (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   numero TEXT,
@@ -133,8 +135,7 @@ CREATE TABLE IF NOT EXISTS emendas (
 );
 CREATE INDEX IF NOT EXISTS idx_emendas_ano ON emendas(ano DESC);
 
--- =============== TABELA: solicitacoes ==========
--- Recebe do site público
+-- ============= solicitacoes (site público) =========
 CREATE TABLE IF NOT EXISTS solicitacoes (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   protocolo TEXT NOT NULL UNIQUE,
@@ -148,18 +149,15 @@ CREATE TABLE IF NOT EXISTS solicitacoes (
   descricao TEXT NOT NULL,
   endereco TEXT,
   consentimento BOOLEAN NOT NULL DEFAULT FALSE,
-  status TEXT NOT NULL DEFAULT 'pendente' CHECK (status IN ('pendente', 'aceito', 'ignorado')),
+  status TEXT NOT NULL DEFAULT 'pendente',
   enviado_em TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   processado_em TIMESTAMPTZ,
   eleitor_id UUID REFERENCES eleitores(id) ON DELETE SET NULL,
   demanda_id UUID REFERENCES demandas(id) ON DELETE SET NULL,
   origem TEXT
 );
-CREATE INDEX IF NOT EXISTS idx_solicitacoes_status ON solicitacoes(status);
-CREATE INDEX IF NOT EXISTS idx_solicitacoes_enviado ON solicitacoes(enviado_em DESC);
 
--- =============== TABELA: disparos ==============
--- Histórico de disparos em massa
+-- ============= disparos ============
 CREATE TABLE IF NOT EXISTS disparos (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -178,7 +176,7 @@ CREATE TABLE IF NOT EXISTS disparos (
   finalizado_em TIMESTAMPTZ
 );
 
--- =============== TRIGGERS pra atualizado_em ====
+-- ============= Triggers atualizado_em =========
 CREATE OR REPLACE FUNCTION trigger_set_atualizado_em()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -197,10 +195,7 @@ CREATE TRIGGER set_atualizado_em_demandas
   BEFORE UPDATE ON demandas
   FOR EACH ROW EXECUTE FUNCTION trigger_set_atualizado_em();
 
--- =============== RLS (Row Level Security) =====
--- Por padrão, apenas usuários autenticados acessam.
--- Pra deixar simples (gabinete único), todos os autenticados veem tudo.
-
+-- ============= RLS (Row Level Security) =========
 ALTER TABLE eleitores ENABLE ROW LEVEL SECURITY;
 ALTER TABLE demandas ENABLE ROW LEVEL SECURITY;
 ALTER TABLE compromissos ENABLE ROW LEVEL SECURITY;
@@ -211,14 +206,13 @@ ALTER TABLE config ENABLE ROW LEVEL SECURITY;
 ALTER TABLE perfis ENABLE ROW LEVEL SECURITY;
 ALTER TABLE disparos ENABLE ROW LEVEL SECURITY;
 
--- Policies: autenticados podem tudo
+-- Authenticated tem acesso total
 DO $$
-DECLARE
-  tbl TEXT;
+DECLARE tbl TEXT;
 BEGIN
   FOR tbl IN VALUES ('eleitores'), ('demandas'), ('compromissos'),
                     ('proposituras'), ('emendas'), ('config'),
-                    ('perfis'), ('disparos')
+                    ('perfis'), ('disparos'), ('solicitacoes')
   LOOP
     EXECUTE format('DROP POLICY IF EXISTS auth_all ON %I', tbl);
     EXECUTE format(
@@ -228,17 +222,11 @@ BEGIN
   END LOOP;
 END $$;
 
--- Solicitações: anon pode INSERT (vem do site público)
+-- Anon pode insert solicitacoes (vem do site público)
 DROP POLICY IF EXISTS anon_insert_solicitacoes ON solicitacoes;
 CREATE POLICY anon_insert_solicitacoes ON solicitacoes
   FOR INSERT TO anon
   WITH CHECK (true);
 
-DROP POLICY IF EXISTS auth_all_solicitacoes ON solicitacoes;
-CREATE POLICY auth_all_solicitacoes ON solicitacoes
-  FOR ALL TO authenticated
-  USING (true) WITH CHECK (true);
-
--- ============================================================
--- Pronto! Roda esse SQL e o schema está completo.
--- ============================================================
+-- ============= Pronto =============
+SELECT 'Schema OK' AS status;

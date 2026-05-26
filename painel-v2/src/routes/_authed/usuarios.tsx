@@ -19,10 +19,9 @@ export const Route = createFileRoute('/_authed/usuarios')({
 })
 
 interface PerfilRow {
-  id: string
-  user_id: string
+  id: string  // = auth.users.id (compat v1)
   nome: string | null
-  email: string
+  email: string | null
   papel: 'admin' | 'assessor'
   avatar_url: string | null
   criado_em: string
@@ -61,7 +60,7 @@ function UsuariosPage() {
   })
 
   async function alterarPapel(p: PerfilRow) {
-    if (p.user_id === auth.user?.id) {
+    if (p.id === auth.user?.id) {
       toast.warn('Você não pode mudar seu próprio papel')
       return
     }
@@ -105,7 +104,7 @@ function UsuariosPage() {
                 <div className="flex-1 min-w-0">
                   <div className="font-bold text-slate-800 truncate flex items-center gap-2">
                     {p.nome ?? p.email}
-                    {p.user_id === auth.user?.id && (
+                    {p.id === auth.user?.id && (
                       <span className="text-[10px] font-bold bg-marco-amarelo/20 text-marco-amarelo-esc px-1.5 py-0.5 rounded">VOCÊ</span>
                     )}
                   </div>
@@ -162,9 +161,9 @@ function ConvidarModal({ open, onClose }: { open: boolean; onClose: () => void }
       const userId = data.user?.id
       if (!userId) throw new Error('Falha ao criar usuário')
 
-      // Cria perfil vinculado
+      // Cria perfil vinculado (compat v1: id = user_id)
       const { error: errPerfil } = await (supabase.from('perfis') as any).insert({
-        user_id: userId, email, nome, papel,
+        id: userId, email, nome, papel,
       })
       if (errPerfil) throw errPerfil
 
